@@ -1,0 +1,43 @@
+/* 准讯周报 · 视频基础样式：字体、配色（与网站一致）、舞台 */
+@font-face{font-family:"ZX Serif";font-weight:900;src:url(../.cache/fonts/NotoSerifSC-Black.otf)}
+@font-face{font-family:"ZX Serif";font-weight:700;src:url(../.cache/fonts/NotoSerifSC-Bold.otf)}
+@font-face{font-family:"ZX Sans";font-weight:400;src:url(../.cache/fonts/NotoSansSC-Regular.otf)}
+@font-face{font-family:"ZX Sans";font-weight:500;src:url(../.cache/fonts/NotoSansSC-Medium.otf)}
+@font-face{font-family:"ZX Sans";font-weight:700;src:url(../.cache/fonts/NotoSansSC-Bold.otf)}
+@font-face{font-family:"ZX Sans";font-weight:900;src:url(../.cache/fonts/NotoSansSC-Black.otf)}
+
+:root{
+  --bg:#F7F4EE;--card:#FFFDF9;--sub:#EFEAE0;--ink:#1B1A18;--sec:#4A4742;--mut:#77726A;--rule:#DAD4C7;--rule2:#1B1A18;
+  --acc:#A3271F;--acc-bg:#F6E7E3;--fc:#1E4D6B;--fc-bg:#E6EEF3;--warn:#7A5200;--ok:#2F6B45;--bar:#B5AE9F;
+  --serif:"ZX Serif",serif;--sans:"ZX Sans",sans-serif;
+}
+.dark{
+  --bg:#121211;--card:#1A1A18;--sub:#232320;--ink:#ECEAE3;--sec:#BDB9AF;--mut:#8D897F;--rule:#34332F;--rule2:#D9D6CE;
+  --acc:#E8776B;--acc-bg:#33201D;--fc:#8CC1E0;--fc-bg:#1A2A33;--warn:#DDAE55;--ok:#7FC79A;--bar:#5A574F;
+}
+*,*::before,*::after{box-sizing:border-box;transition:none!important;animation:none!important}
+html,body{margin:0;padding:0}
+body{width:var(--W);height:var(--H);overflow:hidden;position:relative;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;font-feature-settings:"palt" 0}
+html.preview{background:#000;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+html.preview body{transform:scale(var(--fit,1));transform-origin:center;flex:none}
+h1,h2,h3,p{margin:0}
+.serif{font-family:var(--serif)}
+.scene{position:absolute;inset:0;display:none;will-change:opacity,transform}
+.acc{color:var(--acc)}.fc{color:var(--fc)}.mut{color:var(--mut)}.sec{color:var(--sec)}.ok{color:var(--ok)}
+
+/* 字幕 */
+#cap{position:absolute;left:0;right:0;z-index:20;display:flex;justify-content:center;pointer-events:none;opacity:0}
+#cap span{display:inline-block;max-width:86%;text-align:center;color:#fff;background:rgba(20,18,16,.78);font-weight:500;
+  border-radius:12px;line-height:1.45;letter-spacing:.02em;text-wrap:balance;white-space:pre-line}
+/* 进度条 */
+#progwrap{position:absolute;left:0;right:0;top:0;height:8px;background:transparent;z-index:21}
+#prog{height:100%;width:0;background:var(--acc)}
+
+/* 复用部件 */
+.kicker{font-weight:700;letter-spacing:.2em;color:var(--acc)}
+.rule2{border-top:3px double var(--rule2)}
+.mark{background-image:linear-gradient(transparent 62%,color-mix(in srgb,var(--acc) 26%,transparent) 62%);background-repeat:no-repeat;background-size:0 100%}
+.dots{display:inline-flex;gap:6px;vertical-align:middle}
+.dots i{width:14px;height:14px;border-radius:50%;border:2.5px solid var(--fc);display:block}
+.dots i.on{background:var(--fc)}

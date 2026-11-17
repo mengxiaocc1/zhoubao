@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>样片 C · 头条深度：Anthropic 的账本（横屏）</title>
+<link rel="stylesheet" href="../lib/base.css">
+<style>
+body{--W:1920px;--H:1080px}
+#cap{bottom:44px}
+#cap span{font-size:40px;padding:10px 28px;max-width:80%}
+#progwrap{height:6px}
+.pad{position:absolute;left:120px;right:120px;top:150px;height:740px}
+.sec-k{font-size:28px;font-weight:700;letter-spacing:.2em;color:var(--acc);display:flex;align-items:center;gap:14px}
+.sec-k::before{content:"";width:34px;height:6px;background:var(--acc)}
+.h{font-family:var(--serif);font-weight:900;font-size:72px;line-height:1.25;margin:10px 0 0}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:80px;height:100%}
+
+/* 顶栏 */
+#bar{position:absolute;left:120px;right:120px;top:34px;display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:4px double var(--rule2);z-index:10}
+#bar b{font-family:var(--serif);font-weight:900;font-size:40px;letter-spacing:.14em}
+#bar .s{font-size:24px;color:var(--mut);letter-spacing:.06em}
+#tabs{margin-left:auto;display:flex;gap:6px}
+#tabs span{font-size:22px;color:var(--mut);padding:6px 14px;border-radius:20px;border:1.5px solid transparent}
+#tabs span.on{color:#fff;background:var(--ink);font-weight:700}
+#tabs span.done{color:var(--sec)}
+
+/* 1 封面 */
+.op-l{position:absolute;left:120px;top:220px;width:1110px}
+.op-l .kicker{font-size:30px}
+.op-l h1{font-family:var(--serif);font-weight:900;font-size:86px;white-space:nowrap;line-height:1.28;margin:18px 0 28px}
+.op-l .dek{font-size:38px;color:var(--sec);border-left:6px solid var(--acc);padding-left:24px;line-height:1.5}
+.op-l .meta{font-size:26px;color:var(--mut);margin-top:30px}
+.ledger{position:absolute;right:110px;top:240px;width:530px;background:var(--card);border:2px solid var(--rule);border-radius:12px;box-shadow:0 2px 4px rgba(40,30,10,.06),0 24px 60px rgba(40,30,10,.14);padding:34px 40px 30px;transform:rotate(-2deg)}
+.ledger .lt{font-family:var(--serif);font-weight:900;font-size:32px;padding-bottom:16px;border-bottom:3px double var(--rule2);display:flex;justify-content:space-between;align-items:baseline}
+.ledger .lt small{font-family:var(--sans);font-weight:500;font-size:20px;color:var(--mut)}
+.lr{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1.5px dashed var(--rule);font-size:28px;color:var(--sec)}
+.lr b{font-family:var(--serif);font-weight:900;font-size:42px;color:var(--ink)}
+.lr b.neg{color:var(--acc)}
+.ledger .src{font-size:20px;color:var(--mut);margin-top:16px}
+
+/* 2 发生了什么 */
+.bul{margin-top:40px;display:grid;gap:26px}
+.bu{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:baseline;font-size:36px;line-height:1.45}
+.bu i{font-style:normal;font-family:var(--serif);font-weight:900;color:var(--acc);font-size:34px}
+.bu b{font-weight:900}
+.panel{background:var(--card);border:2px solid var(--rule);border-radius:18px;padding:22px 34px 24px}
+.panel .pt{font-size:26px;color:var(--mut);margin-bottom:12px;display:flex;justify-content:space-between}
+.div-chart{position:relative;height:250px;display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:0 50px}
+.div-chart .zero{position:absolute;left:0;right:0;top:140px;height:2px;background:var(--rule2)}
+.dc{position:relative}
+.dc .barw{position:absolute;left:20%;right:20%;height:100px}
+.dc .barw.up{top:40px}.dc .barw.dn{top:142px;height:58px}
+.dc .bb{position:absolute;left:0;right:0;border-radius:6px}
+.dc .up .bb{bottom:0;background:var(--ok)}
+.dc .dn .bb{top:0;background:var(--acc)}
+.dc .v{position:absolute;left:0;right:0;text-align:center;font-family:var(--serif);font-weight:900;font-size:38px}
+.dc .q{position:absolute;left:0;right:0;text-align:center;font-size:24px;color:var(--mut)}
+.hb{display:grid;grid-template-columns:110px 1fr 130px;align-items:center;gap:18px;margin-top:16px;font-size:26px;color:var(--sec)}
+.hb .tk{height:40px;background:var(--sub);border-radius:6px;overflow:hidden}
+.hb .fl{height:100%;width:0;background:var(--bar)}
+.hb.hi .fl{background:var(--acc)}
+.hb .vv{font-family:var(--serif);font-weight:900;font-size:34px;color:var(--ink)}
+.hb.hi .vv{color:var(--acc)}
+
+/* 3 亏损从哪来 */
+.rs{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:44px}
+.rc{background:var(--card);border:2px solid var(--rule);border-radius:18px;padding:30px 36px;position:relative}
+.rc .n{position:absolute;top:-22px;left:30px;width:48px;height:48px;border-radius:50%;background:var(--acc);color:#fff;font-weight:900;font-size:28px;display:flex;align-items:center;justify-content:center}
+.rc .v{font-family:var(--serif);font-weight:900;font-size:64px;color:var(--acc)}
+.rc .v small{font-size:.5em;margin-left:6px}
+.rc p{font-size:30px;color:var(--sec);line-height:1.55;margin-top:6px}
+.rc .tg{display:inline-block;font-size:22px;font-weight:700;color:var(--fc);background:var(--fc-bg);border-radius:6px;padding:2px 10px;margin-top:12px;margin-right:8px}
+.adj{margin-top:40px;display:grid;grid-template-columns:auto 1fr;gap:50px;align-items:center;border-top:2px solid var(--rule);padding-top:30px}
+.adj .a1{font-size:28px;color:var(--mut)}
+.adj .a1 b{display:block;font-family:var(--serif);font-weight:900;font-size:58px;color:var(--ok)}
+
+/* 4 核心判断 */
+.core{position:absolute;left:180px;right:180px;top:190px;text-align:center}
+.core .lbl{display:inline-block;background:var(--acc);color:#fff;font-weight:900;font-size:28px;letter-spacing:.2em;padding:8px 24px;border-radius:8px}
+.core blockquote{margin:30px 0 0;font-family:var(--serif);font-weight:900;font-size:76px;line-height:1.38}
+.flowr{display:flex;justify-content:center;align-items:center;gap:22px;margin-top:56px}
+.fc1{background:var(--card);border:2px solid var(--rule);border-radius:16px;padding:18px 28px;font-size:32px;font-weight:700}
+.fc1 small{display:block;font-size:22px;font-weight:500;color:var(--mut);margin-top:2px}
+.flowr .ar{font-size:40px;color:var(--mut)}
+.watch{margin-top:56px;display:inline-block;font-size:40px;font-weight:700;border-top:3px solid var(--rule2);border-bottom:3px solid var(--rule2);padding:18px 34px}
+.watch b{font-family:var(--serif);font-weight:900;color:var(--acc);font-size:52px;margin:0 8px}
+
+/* 5 规模 */
+.sc-bars{margin-top:44px}
+.sb{display:grid;grid-template-columns:230px 1fr;gap:26px;align-items:center;margin-bottom:26px}
+.sb .l{font-size:30px;color:var(--sec);text-align:right}
+.sb .l b{display:block;font-family:var(--serif);font-weight:900;font-size:40px;color:var(--ink)}
+.sb .tk{position:relative;height:64px}
+.sb .fl{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:6px}
+.sb.rev .fl{background:var(--ok)}
+.sb.com .fl{background:var(--acc)}
+.ticks{position:absolute;left:0;top:0;bottom:0;width:100%;display:flex}
+.ticks i{flex:1;border-right:3px solid var(--bg)}
+.x13{position:absolute;right:0;top:74px;font-size:36px!important;font-family:var(--serif);font-weight:900;font-size:44px;color:var(--acc)}
+.gr{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:80px;align-items:end}
+.gcol{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;height:180px;align-items:end;padding:0 60px;border-bottom:2px solid var(--rule2)}
+.gc{position:relative;height:100%}
+.gc .fl{position:absolute;bottom:0;left:15%;right:15%;height:0;background:var(--bar);border-radius:6px 6px 0 0}
+.gc.hi .fl{background:var(--acc)}
+.gc .v{position:absolute;left:0;right:0;text-align:center;font-family:var(--serif);font-weight:900;font-size:36px}
+.gq{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;padding:10px 60px 0;font-size:24px;color:var(--mut);text-align:center}
+.gnote{font-size:34px;line-height:1.55;color:var(--sec)}
+.gnote b{color:var(--acc);font-family:var(--serif);font-weight:900;font-size:56px;display:block}
+
+/* 6 电 */
+.gw{font-family:var(--serif);font-weight:900;font-size:220px;line-height:1;margin-top:30px}
+.gw small{font-size:.32em;margin-left:14px}
+.gws{font-size:32px;color:var(--sec);line-height:1.7;margin-top:26px}
+.gws b{color:var(--ink)}
+.bn{display:flex;align-items:center;gap:40px;justify-content:center;margin-top:30px}
+.bn .chip{font-family:var(--serif);font-weight:900;font-size:110px;color:var(--mut);position:relative}
+.bn .chip::after{content:"";position:absolute;left:-10px;right:-10px;top:52%;height:10px;background:var(--acc);transform-origin:left;transform:scaleX(var(--s,0))}
+.bn .ar{font-size:80px;color:var(--mut)}
+.bn .el{font-family:var(--serif);font-weight:900;font-size:180px;color:var(--acc)}
+.bnq{margin-top:36px;font-family:var(--serif);font-weight:700;font-size:38px;line-height:1.6;text-align:center;color:var(--ink)}
+.bnl{text-align:center;font-size:28px;color:var(--mut);letter-spacing:.2em}
+
+/* 7 反方 */
+.cs{display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:44px}
+.cc{border-radius:20px;padding:34px 40px;border-top:10px solid}
+.cc.bear{background:var(--fc-bg);border-color:var(--fc)}
+.cc.bull{background:var(--acc-bg);border-color:var(--acc)}
+.cc .w{font-size:26px;font-weight:700;letter-spacing:.14em}
+.cc.bear .w{color:var(--fc)}.cc.bull .w{color:var(--acc)}
+.cc h3{font-family:var(--serif);font-weight:900;font-size:52px;line-height:1.3;margin:8px 0 18px}
+.cc li{font-size:32px;line-height:1.6;color:var(--sec);margin-left:1em}
+.cc ul{margin:0;padding:0}
+.cfoot{margin-top:40px;text-align:center;font-family:var(--serif);font-weight:700;font-size:40px}
+
+/* 8 预测台账 */
+.lg{display:flex;gap:30px;font-size:24px;color:var(--mut);margin-top:16px;align-items:center}
+.tbl{margin-top:34px;border:2px solid var(--rule);border-radius:18px;background:var(--card);overflow:hidden}
+.tr{display:grid;grid-template-columns:90px 1fr 300px 250px;gap:20px;align-items:center;padding:24px 34px;border-bottom:2px solid var(--rule);transition:none}
+.tr:last-child{border-bottom:0}
+.tr.th{padding:14px 34px;background:var(--sub);font-size:22px;color:var(--mut);letter-spacing:.1em}
+.tr .i{font-family:var(--serif);font-weight:900;font-size:44px;color:var(--mut)}
+.tr .t{font-size:34px;font-weight:700;line-height:1.45}
+.tr .t small{display:block;font-size:24px;font-weight:500;color:var(--warn);margin-top:6px}
+.tr .by{font-size:26px;color:var(--sec)}
+.tr .cf{font-size:26px;font-weight:700;color:var(--fc);display:flex;align-items:center;gap:12px}
+.tr .dots i{width:18px;height:18px;border-width:2.5px}
+.tr.on{background:var(--fc-bg)}
+.tr.on .i{color:var(--acc)}
+
+/* 9 对你 */
+.ys{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;margin-top:50px}
+.yc{background:var(--card);border:2px solid var(--rule);border-radius:20px;padding:34px 34px 36px}
+.yc .who{display:inline-block;font-size:28px;font-weight:900;color:#fff;background:var(--ink);border-radius:8px;padding:6px 18px;margin-bottom:20px}
+.yc p{font-size:34px;line-height:1.6}
+.yc p b{color:var(--acc)}
+
+/* 10 结尾 */
+.end{position:absolute;left:0;right:0;top:200px;text-align:center}
+.end .en{font-size:26px;letter-spacing:.5em;color:var(--mut);padding-left:.5em}
+.end h1{font-family:var(--serif);font-weight:900;font-size:150px;letter-spacing:.14em;padding-left:.14em;line-height:1.3}
+.end .r{width:900px;margin:10px auto 34px;height:12px;border-top:4px solid var(--rule2);border-bottom:2px solid var(--rule2)}
+.end .s{font-size:40px;font-weight:700}
+.end .s b{font-family:var(--serif);font-weight:900;color:var(--acc);font-size:52px;margin:0 6px}
+.end .u{display:inline-block;margin-top:44px;font-size:36px;font-weight:700;color:#fff;background:var(--ink);border-radius:50px;padding:14px 40px}
+.end .src{margin-top:30px;font-size:22px;color:var(--mut)}
+</style>
+</head>
+<body>
+<div id="progwrap"><div id="prog"></div></div>
+<div id="bar"><b>准讯周报</b><span class="s">头条深度 · 2026 W45</span>
+  <div id="tabs"><span>发生了什么</span><span>核心判断</span><span>为什么要紧</span><span>反方</span><span>预测</span><span>对你</span></div>
+</div>
+
+<!-- 1 封面 -->
+<section class="scene" data-beat="open" data-tr="zoom">
+  <div class="op-l">
+    <div class="kicker" data-at="+0.1" data-fx="left">头条 · 账本</div>
+    <h1 data-at="open.2-0.2">一个季度收 <span class="acc">170 亿美元</span>，<br>却亏了 <span class="acc">5.67 亿</span></h1>
+    <div class="dek" data-at="open.2$-2.6">AI 行业第一份公开账本说了什么</div>
+    <div class="meta" data-at="open.2$-2.0" data-fx="fade">Anthropic 修订版招股书 · 11.02 — 11.10</div>
+  </div>
+  <div class="ledger" data-at="+0.3" data-fx="scale" data-d="0.8">
+    <div class="lt">三季度账本摘要<small>据招股书整理</small></div>
+    <div class="lr" data-at="+0.9" data-fx="left">收入<b>169.6 亿美元</b></div>
+    <div class="lr" data-at="+1.2" data-fx="left">经营利润<b class="neg">−5.67 亿美元</b></div>
+    <div class="lr" data-at="+1.5" data-fx="left">算力成本 / 收入<b class="neg">58%</b></div>
+    <div class="lr" data-at="+1.8" data-fx="left">长期采购承诺<b>8954 亿美元</b></div>
+    <div class="src" data-at="+2.1" data-fx="fade">来源：Anthropic S-1/A</div>
+  </div>
+</section>
+
+<!-- 2 发生了什么 -->
+<section class="scene" data-beat="facts">
+  <div class="pad col2">
+    <div>
+      <div class="sec-k" data-at="+0.1" data-fx="left">发生了什么</div>
+      <h2 class="h" data-at="+0.2">上市前，账本<br>第一次公开</h2>
+      <div class="bul">
+        <div class="bu" data-at="facts.1+0.2" data-fx="left"><i>01</i><span>更新<b>招股书</b>（S-1/A），计划在纳斯达克上市</span></div>
+        <div class="bu" data-at="facts.2" data-fx="left"><i>02</i><span>三季度收入 <b>169.6 亿美元</b>，同比约 11 倍</span></div>
+        <div class="bu" data-at="facts.3" data-fx="left"><i>03</i><span>经营利润由盈转亏：<b>+9.74 → −5.67 亿</b></span></div>
+        <div class="bu" data-at="facts.4" data-fx="left"><i>04</i><span>算力成本占收入：<b>48% → 58%</b></span></div>
+      </div>
+    </div>
+    <div style="display:grid;gap:30px;align-content:center">
+      <div class="panel" data-at="facts.3-0.2">
+        <div class="pt"><span>经营利润（亿美元）</span><span>二季度 → 三季度</span></div>
+        <div class="div-chart">
+          <div class="zero"></div>
+          <div class="dc"><div class="barw up"><div class="bb" data-bar="1" data-axis="y" data-bat="facts.3+0.3" style="height:0"></div></div><div class="v ok" style="top:-8px" data-at="facts.3+0.9" data-fx="fade">+9.74</div><div class="q" style="top:150px">二季度</div></div>
+          <div class="dc"><div class="barw dn"><div class="bb" data-bar="1" data-axis="y" data-bat="facts.3$-1.6" style="height:0"></div></div><div class="v acc" style="top:200px" data-at="facts.3$-1.0" data-fx="fade">−5.67</div><div class="q" style="top:100px">三季度</div></div>
+        </div>
+      </div>
+      <div class="panel" data-at="facts.4-0.2">
+        <div class="pt"><span>算力与基础设施成本 / 收入</span></div>
+        <div class="hb"><span>二季度</span><div class="tk"><div class="fl" data-bar="0.48" data-bat="facts.4+0.2"></div></div><span class="vv">约 48%</span></div>
+        <div class="hb hi"><span>三季度</span><div class="tk"><div class="fl" data-bar="0.58" data-bat="facts.4+0.6"></div></div><span class="vv">58%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 亏损从哪来 -->
+<section class="scene" data-beat="reason">
+  <div class="pad">
+    <div class="sec-k" data-at="+0.1" data-fx="left">发生了什么</div>
+    <h2 class="h" data-at="+0.2">亏损从哪来？招股书的两条解释</h2>
+    <div class="rs">
+      <div class="rc" data-at="reason.2-0.1"><div class="n">1</div><div class="v">约 50<small>亿美元算力</small></div><p>按短期合同临时购买，单价「明显高于」多年期长约</p><span class="tg">需求来得比算力快</span></div>
+      <div class="rc" data-at="reason.3-0.1"><div class="n">2</div><div class="v">约 20<small>亿美元费用</small></div><p>员工捐赠配捐产生的费用，不花现金</p><span class="tg">非现金</span><span class="tg">一次性</span></div>
+    </div>
+    <div class="adj" data-at="reason.4-0.1">
+      <div class="a1">剔除特殊项目后<b>经调整经营利润 25 亿美元</b></div>
+      <div>
+        <div class="hb" style="grid-template-columns:200px 1fr 90px"><span>利润率 · 二季度</span><div class="tk"><div class="fl" data-bar="0.19" data-bat="reason.4+1.2" style="background:var(--ok)"></div></div><span class="vv">19%</span></div>
+        <div class="hb" style="grid-template-columns:200px 1fr 90px"><span>利润率 · 三季度</span><div class="tk"><div class="fl" data-bar="0.15" data-bat="reason.4$-1.6" style="background:var(--ok)"></div></div><span class="vv">15%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 核心判断 -->
+<section class="scene" data-beat="core">
+  <div class="core">
+    <div class="lbl" data-at="+0.1" data-fx="pop">核心判断</div>
+    <blockquote data-at="core.1+0.6">亏损不是因为生意不赚钱，<br>而是<span class="mark" data-mark data-mat="core.1$-2.0">需求来得比算力快</span>。</blockquote>
+    <div class="flowr">
+      <div class="fc1" data-at="core.2+0.2" data-fx="pop">生意太好<small>需求暴涨</small></div><span class="ar" data-at="core.2+0.9" data-fx="fade">→</span>
+      <div class="fc1" data-at="core.2+1.2" data-fx="pop">厨房不够<small>长约算力未到位</small></div><span class="ar" data-at="core.2+2.2" data-fx="fade">→</span>
+      <div class="fc1" data-at="core.2+2.5" data-fx="pop" style="border-color:var(--acc)">高价叫外卖<small>短期算力吃掉利润</small></div>
+    </div>
+    <div class="watch" data-at="core.3+0.8">真正该盯：<b>8954 亿美元</b>的长期承诺，能不能被收入追上</div>
+  </div>
+</section>
+
+<!-- 5 规模 -->
+<section class="scene" data-beat="scale">
+  <div class="pad">
+    <div class="sec-k" data-at="+0.1" data-fx="left">为什么要紧</div>
+    <h2 class="h" data-at="+0.2">8954 亿美元有多大？</h2>
+    <div class="sc-bars">
+      <div class="sb rev" data-at="scale.1+1.6" data-fx="fade"><div class="l">年化收入<b>≈ 680 亿</b></div><div class="tk"><div class="fl" data-bar="0.076" data-bat="scale.1+1.8"></div></div></div>
+      <div class="sb com" data-at="scale.2-0.1" data-fx="fade"><div class="l">长期承诺<b>8954 亿</b></div><div class="tk"><div class="fl" data-bar="1" data-bat="scale.2+0.1" data-bd="1.6"></div><div class="ticks" id="ticks" data-at="scale.2+1.8" data-fx="fade"></div><div class="x13" data-at="scale.2+2.2" data-fx="pop">≈ 13 年的收入 · 多为照付不议</div></div></div>
+    </div>
+    <div class="gr" data-at="scale.3-0.1">
+      <div>
+        <div class="gcol">
+          <div class="gc"><div class="fl" data-bar="0.96" data-axis="y" data-bat="scale.3+0.6"></div><div class="v" style="bottom:182px" data-at="scale.3+1.2" data-fx="fade">144%</div></div>
+          <div class="gc hi"><div class="fl" data-bar="0.313" data-axis="y" data-bat="scale.3+1.6"></div><div class="v acc" style="bottom:64px" data-at="scale.3+2.2" data-fx="fade">47%</div></div>
+        </div>
+        <div class="gq"><span>二季度 · 144%</span><span>三季度 · 47%</span></div>
+      </div>
+      <div class="gnote" data-at="scale.3$-1.6">收入环比增速<b>144% → 47%</b>承诺是按更高的增长预期签下的</div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 电 -->
+<section class="scene" data-beat="power">
+  <div class="pad col2" style="height:700px">
+    <div>
+      <div class="sec-k" data-at="+0.1" data-fx="left">为什么要紧</div>
+      <h2 class="h" data-at="+0.2">买发电机，自己发电</h2>
+      <div class="gw" data-at="power.1+2.0" data-fx="fade"><span data-count="1.7" data-dec="1" data-cat="power.1+2.0">0</span><small>吉瓦</small></div>
+      <div class="gws" data-at="power.1+3.0">燃气发电机组 · 约 <b>34 亿美元</b><br>接手 OnePWR 的卡特彼勒订单<br>机房旁「表后供电」，绕开电网排队</div>
+    </div>
+    <div style="align-self:center">
+      <div class="bnl" data-at="power.2-0.1" data-fx="fade">瓶颈在移动</div>
+      <div class="bn">
+        <span class="chip" id="chipx" data-at="power.2-0.1" data-fx="fade">芯片</span><span class="ar" data-at="power.2+0.5" data-fx="fade">→</span><span class="el" data-at="power.2+0.8" data-fx="pop">电</span>
+      </div>
+      <div class="bnq" data-at="power.2$-3.4">一家写软件的公司，<br>资产负债表开始长得像电力公司</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 反方 -->
+<section class="scene" data-beat="counter">
+  <div class="pad">
+    <div class="sec-k" data-at="+0.1" data-fx="left">反方意见</div>
+    <h2 class="h" data-at="+0.2">两边都有没算进去的东西</h2>
+    <div class="cs">
+      <div class="cc bear" data-at="counter.2-0.1"><div class="w">如果你看空</div><h3>可能高估了这笔亏损</h3><ul><li>约 20 亿美元是一次性非现金费用</li><li>四季度长约算力上线，利润率有望修复</li></ul></div>
+      <div class="cc bull" data-at="counter.3-0.1"><div class="w">如果你看多</div><h3>可能低估了增速变化</h3><ul><li>环比增速 144% → 47%，斜率变了</li><li>8954 亿美元的成本承诺没有变</li></ul></div>
+    </div>
+    <div class="cfoot" data-at="counter.3$-1.4">下一个检验点：2027 年初，上市后的首份财报</div>
+  </div>
+</section>
+
+<!-- 8 预测台账 -->
+<section class="scene" data-beat="fc">
+  <div class="pad">
+    <div class="sec-k" data-at="+0.1" data-fx="left">预测台账</div>
+    <h2 class="h" data-at="+0.2">三条可以对账的预测</h2>
+    <div class="lg" data-at="+0.6" data-fx="fade">把握度：<span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>高　<span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>中高　<span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i></span>中　到期逐条公开对账</div>
+    <div class="tbl">
+      <div class="tr th"><span>#</span><span>预测</span><span>验证时间</span><span>把握度</span></div>
+      <div class="tr" id="r1" data-at="fc.2-0.1" data-fx="fade"><span class="i">01</span><span class="t">最终发行估值落在 1 万亿到 1.4 万亿美元之间</span><span class="by">2026 年 11 月下旬定价时</span><span class="cf"><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>中高</span></div>
+      <div class="tr" id="r2" data-at="fc.3-0.1" data-fx="fade"><span class="i">02</span><span class="t">四季度算力成本占收入回落到 55% 以下<small data-at="fc.3$-3.6" data-fx="fade">反证：若不降反升，「临时高价算力」不是暂时现象</small></span><span class="by">2027 年初首份上市后财报</span><span class="cf"><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i></span>中</span></div>
+      <div class="tr" id="r3" data-at="fc.4-0.1" data-fx="fade"><span class="i">03</span><span class="t">至少再有一家头部 AI 实验室或云厂商宣布吉瓦级自备电源</span><span class="by">2027 年 5 月前</span><span class="cf"><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>高</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 对你 -->
+<section class="scene" data-beat="you">
+  <div class="pad">
+    <div class="sec-k" data-at="+0.1" data-fx="left">对你意味着什么</div>
+    <h2 class="h" data-at="+0.2">三种人，三种用法</h2>
+    <div class="ys">
+      <div class="yc" data-at="you.2-0.1"><div class="who">企业采购</div><p>Anthropic 需要长期合同证明收入确定性。现在谈 <b>1–3 年期用量合同</b>，议价空间更大。</p></div>
+      <div class="yc" data-at="you.3-0.1"><div class="who">投资者</div><p>看<b>经调整利润率</b>和<b>短期算力占比</b>，不要只看标题里的亏损数字。</p></div>
+      <div class="yc" data-at="you.4-0.1"><div class="who">普通用户</div><p>别指望全面降价。更可能是<b>分层</b>：基础功能更便宜，重度使用按量收费。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 结尾 -->
+<section class="scene" data-beat="outro" data-tr="zoom">
+  <div class="end">
+    <div class="en" data-at="+0.1" data-fx="fade">ZHUNXUN WEEKLY</div>
+    <h1 data-at="+0.2" data-fx="blur" data-d="0.9">准讯周报</h1>
+    <div class="r" data-at="+0.5" data-fx="wipe" data-d="0.8"></div>
+    <div class="s" data-at="+0.8"><b>12</b>条新闻 · 每条一个判断 · <b>39</b>条可对账的预测</div>
+    <div class="u" data-at="+1.4">mengxiaocc1.github.io/zhoubao</div>
+    <div class="src" data-at="+1.9" data-fx="fade">本片数据来源：Anthropic S-1/A · Stock Analysis · CNBC · Dealroom</div>
+  </div>
+</section>
+
+<div id="cap" data-max="30"><span></span></div>
+
+<script src="build/timeline.js"></script>
+<script>
+(function(){
+  var tk=document.getElementById('ticks');for(var i=0;i<13;i++)tk.appendChild(document.createElement('i'));
+  var CH={facts:0,reason:0,core:1,scale:2,power:2,counter:3,fc:4,you:5};
+  var tabs=[].slice.call(document.querySelectorAll('#tabs span'));
+  window.HOOKS=window.HOOKS||[];
+  HOOKS.push(function(t){
+    var Z=ZXV,B=TL.beats,cur=-1;
+    TL.order.forEach(function(id){ if(t>=B[id].start-0.3 && CH[id]!=null) cur=CH[id]; if(id==='outro'&&t>=B[id].start-0.3) cur=-1; });
+    tabs.forEach(function(s,i){ s.className = i===cur?'on':(cur>i||t>=B.outro.start-0.3?'done':''); });
+    // 「芯片」被划掉
+    document.getElementById('chipx').style.setProperty('--s',Z.E.inout(Z.prog(t,B.power.lines[1].start+0.3,0.5)));
+    // 预测表：当前朗读的那一行高亮
+    var L=B.fc.lines;[['r1',1],['r2',2],['r3',3]].forEach(function(r){var on=t>=L[r[1]].start-0.1&&(r[1]===3||t<L[r[1]+1].start-0.1);document.getElementById(r[0]).classList.toggle('on',on);});
+  });
+})();
+</script>
+<script src="../lib/engine.js"></script>
+</body>
+</html>

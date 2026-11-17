@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+<meta charset="UTF-8">
+<title>样片 B · 机器人的算术题（竖屏数据解说）</title>
+<link rel="stylesheet" href="../lib/base.css">
+<style>
+body{--W:1080px;--H:1920px;background:radial-gradient(120% 70% at 50% 0%,#1E1D1B 0%,#121211 60%)}
+.pad{position:absolute;left:80px;right:80px;top:250px;height:1160px;display:flex;flex-direction:column;justify-content:center}
+#cap{bottom:300px}
+#cap span{font-size:46px;padding:14px 30px;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.08)}
+#hdr{position:absolute;left:80px;right:80px;top:100px;display:flex;align-items:center;gap:16px;z-index:10}
+#hdr b{font-family:var(--serif);font-weight:900;font-size:44px;letter-spacing:.12em}
+#hdr span{font-size:28px;color:var(--mut);border-left:2px solid var(--rule);padding-left:16px}
+#hdr i{margin-left:auto;font-style:normal;font-size:26px;color:var(--acc);border:2px solid var(--acc);border-radius:30px;padding:4px 18px;font-weight:700}
+.num{font-family:var(--sans);font-weight:900;letter-spacing:-.02em;line-height:1}
+.lbl{font-size:40px;color:var(--sec);margin-top:14px}
+.h{font-family:var(--serif);font-weight:900;font-size:84px;line-height:1.25}
+
+/* 1 钩子 */
+.hk-a{text-align:center}
+.hk-a .num{font-size:330px;color:var(--ok)}
+.hk-b{margin-top:70px;text-align:center}
+.chips{display:flex;justify-content:center;align-items:center;gap:14px;margin-bottom:40px}
+.chip{background:var(--card);border:2px solid var(--rule);border-radius:16px;padding:16px 22px;font-size:34px}
+.chip b{color:var(--ok);margin-left:8px}
+.chips .x{font-size:40px;color:var(--mut)}
+.hk-b .num{font-size:300px;color:var(--acc)}
+.hk-b .num small{font-size:.5em;color:var(--mut);margin-right:10px;vertical-align:.3em}
+
+/* 2 HALO */
+.tag{display:inline-block;font-size:30px;font-weight:700;color:var(--fc);background:var(--fc-bg);border-radius:10px;padding:6px 18px;margin-bottom:22px}
+.facts{margin:40px 0 0;display:grid;gap:18px}
+.fact{display:flex;align-items:center;gap:22px;font-size:44px;font-weight:500}
+.fact::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--fc);flex:none}
+.fact b{font-weight:900;color:var(--fc)}
+.chain{margin-top:70px;display:flex;flex-direction:column;align-items:stretch;gap:0}
+.cn{display:grid;grid-template-columns:150px 1fr auto;align-items:center;gap:24px;background:var(--card);border:2px solid var(--rule);border-radius:18px;padding:22px 28px}
+.cn .k{font-size:30px;color:var(--mut);letter-spacing:.1em}
+.cn .v{font-size:44px;font-weight:700}
+.cn .f{font-size:30px;font-weight:700;border-radius:8px;padding:4px 14px}
+.cn .f.us{color:var(--fc);background:var(--fc-bg)}
+.cn .f.cn{color:var(--acc);background:var(--acc-bg)}
+.arr{height:46px;margin-left:100px;border-left:3px dashed var(--mut)}
+.chain-l{font-size:32px;color:var(--mut);margin-top:22px;text-align:right}
+
+/* 3 曲线 */
+.fm{display:flex;align-items:baseline;gap:26px;height:190px}
+.fm .base{font-size:150px}
+.fm sup{font-size:70px;color:var(--mut);vertical-align:1.4em;margin-left:4px}
+.fm .eq{font-size:70px;color:var(--mut)}
+.fm .res{font-size:150px;color:var(--acc)}
+.fm .res.ok{color:var(--ok)}
+.fm-step{font-size:40px;color:var(--sec);margin:6px 0 30px}
+.fm-step b{color:var(--ink);font-weight:900}
+svg text{font-family:"ZX Sans";fill:var(--mut)}
+.grid line{stroke:var(--rule);stroke-width:2}
+.ann text{font-weight:700}
+
+/* 4 失误率 */
+.grids{display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:50px}
+.gw .gt{font-size:40px;font-weight:900;margin-bottom:6px}
+.gw .gs{font-size:30px;color:var(--mut);margin-bottom:22px}
+.g{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.g i{display:block;aspect-ratio:1;border-radius:4px;background:var(--sub)}
+.g i.e{background:var(--acc)}
+.div9{margin-top:60px;text-align:center}
+.div9 .num{font-size:200px;color:var(--acc)}
+.div9 .lbl{margin-top:4px}
+
+/* 5 适合哪里 */
+.cards{display:grid;gap:30px;margin-top:50px}
+.cd{border-radius:24px;padding:36px 40px;border:3px solid}
+.cd.y{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,var(--bg))}
+.cd.n{border-color:var(--acc);background:var(--acc-bg)}
+.cd h3{display:flex;align-items:center;gap:20px;font-family:var(--serif);font-weight:900;font-size:66px}
+.cd h3 em{font-style:normal;font-family:var(--sans);width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:54px;color:#121211}
+.cd.y h3 em{background:var(--ok)}.cd.n h3 em{background:var(--acc)}
+.cd p{font-size:38px;color:var(--sec);margin-top:14px;padding-left:104px}
+
+/* 6 预测 */
+.fcard{position:relative;margin-top:50px;background:var(--card);border:2px solid var(--rule);border-radius:24px;padding:44px 44px 40px}
+.fcard .fl{font-size:30px;font-weight:700;letter-spacing:.16em;color:var(--fc)}
+.fcard .ft{font-family:var(--serif);font-weight:900;font-size:52px;line-height:1.45;margin:18px 0 34px}
+.fmeta{display:flex;gap:36px;flex-wrap:wrap;font-size:34px;color:var(--sec);border-top:2px solid var(--rule);padding-top:26px}
+.fmeta b{color:var(--fc);margin-left:10px}
+.dots i{width:22px;height:22px;border-width:3px}
+.stamp{position:absolute;right:30px;top:-50px;font-family:var(--serif);font-weight:900;font-size:50px;color:var(--acc);border:6px double var(--acc);border-radius:14px;padding:6px 22px;transform:rotate(-8deg);background:var(--bg)}
+
+/* 7 结尾 */
+.end{text-align:center}
+.end .t{font-family:var(--serif);font-weight:900;font-size:170px;letter-spacing:.1em;padding-left:.1em;line-height:1.25}
+.end .r{height:12px;border-top:4px solid var(--rule2);border-bottom:2px solid var(--rule2);margin:16px 0 40px}
+.end .s{font-size:50px;font-weight:700}
+.end .s span{color:var(--acc)}
+.end .u{display:inline-block;margin-top:70px;font-size:38px;font-weight:700;color:#121211;background:var(--ink);border-radius:60px;padding:18px 44px}
+</style>
+</head>
+<body>
+<div id="progwrap"><div id="prog"></div></div>
+<div id="hdr"><b>准讯周报</b><span>W45 · 机器人</span><i>一道算术题</i></div>
+
+<!-- 1 钩子 -->
+<section class="scene" data-beat="hook" data-tr="cut">
+  <div class="pad">
+    <div class="hk-a">
+      <div class="num" data-at="+0.0" data-fx="pop" data-d="0.6"><span data-count="91" data-cat="+0.0" data-cd="0.9">0</span>%</div>
+      <div class="lbl" data-at="+0.4">单个动作成功率</div>
+    </div>
+    <div class="hk-b">
+      <div class="chips">
+        <div class="chip" data-at="hook.2+0.2" data-fx="pop">动作 1<b>91%</b></div><span class="x" data-at="hook.2+0.4" data-fx="fade">×</span>
+        <div class="chip" data-at="hook.2+0.5" data-fx="pop">动作 2<b>91%</b></div><span class="x" data-at="hook.2+0.7" data-fx="fade">×</span>
+        <div class="chip" data-at="hook.2+0.8" data-fx="pop">动作 3<b>91%</b></div>
+      </div>
+      <div class="num" data-at="hook.2$-1.3" data-fx="pop" data-d="0.6"><small>≈</small>50%</div>
+      <div class="lbl" data-at="hook.2$-1.0">三个动作连起来做</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 HALO -->
+<section class="scene" data-beat="who">
+  <div class="pad" style="justify-content:flex-start;top:280px">
+    <div><span class="tag" data-at="+0.1" data-fx="left">苹果 · 开源</span></div>
+    <h2 class="h" data-at="+0.2">人形机器人控制系统<br><span class="fc">HALO</span></h2>
+    <div class="facts">
+      <div class="fact" data-at="who.1+1.2" data-fx="left">完全在仿真环境里训练</div>
+      <div class="fact" data-at="who.1+1.8" data-fx="left">一台 Mac mini 本地运行</div>
+      <div class="fact" data-at="who.1$-2.2" data-fx="left"><span><b>360</b> 次真实测试</span></div>
+    </div>
+    <div class="chain">
+      <div class="cn" data-at="who.2+0.0"><span class="k">算法</span><span class="v">苹果 HALO</span><span class="f us">美国</span></div>
+      <div class="arr" data-at="who.2+0.6" data-fx="wipeup"></div>
+      <div class="cn" data-at="who.2+1.4"><span class="k">模型</span><span class="v">阿里 Qwen（开源）</span><span class="f cn">中国</span></div>
+      <div class="arr" data-at="who.2+2.0" data-fx="wipeup"></div>
+      <div class="cn" data-at="who.2+2.8"><span class="k">机器人</span><span class="v">宇树 G1</span><span class="f cn">中国</span></div>
+      <div class="chain-l" data-at="who.2$-0.6" data-fx="fade">一张全球产业链的切片</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 曲线：0.91 的 n 次方 -->
+<section class="scene" data-beat="math">
+  <div class="pad" style="justify-content:flex-start;top:250px">
+    <div id="fmA" data-at="+0.1" data-off="need-0.1">
+      <div class="fm"><span class="num base">0.91<sup id="nsup">n</sup></span><span class="eq">=</span><span class="num res" id="pct">100%</span></div>
+      <div class="fm-step" id="step">每多一步，再乘一次 0.91</div>
+    </div>
+    <div id="fmB" data-at="need+0.1" style="position:absolute;top:0;left:0;right:0">
+      <div class="fm"><span class="num base ok">0.989<sup>20</sup></span><span class="eq">≈</span><span class="num res ok">80%</span></div>
+      <div class="fm-step">每步 <b class="ok">98.9%</b>，做 20 步还有八成把握</div>
+    </div>
+    <svg id="chart" width="920" height="760" viewBox="0 0 920 760" data-at="math.1+0.4" data-fx="fade"></svg>
+  </div>
+</section>
+
+<!-- 4 失误率 -->
+<section class="scene" data-beat="err">
+  <div class="pad">
+    <h2 class="h" data-at="+0.1">看似只差 <span class="acc">8</span> 个点</h2>
+    <div class="grids">
+      <div class="gw" data-at="err.1+0.4"><div class="gt">每步 91%</div><div class="gs">100 次里错 9 次</div><div class="g" id="g1"></div></div>
+      <div class="gw" data-at="err.1+1.0"><div class="gt ok">每步 99%</div><div class="gs">100 次里错 1 次</div><div class="g" id="g2"></div></div>
+    </div>
+    <div class="div9" data-at="err.2+0.6" data-fx="pop">
+      <div class="num">÷ 9</div>
+      <div class="lbl">失误率要降到原来的九分之一</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 适合哪里 -->
+<section class="scene" data-beat="so">
+  <div class="pad">
+    <h2 class="h" data-at="+0.1">现在的机器人<br>适合去哪？</h2>
+    <div class="cards">
+      <div class="cd y" data-at="so.1+1.6" data-fx="left"><h3><em>✓</em>工厂固定工序</h3><p>步骤少 · 环境固定 · 现在就能试点</p></div>
+      <div class="cd n" data-at="so.2-0.1" data-fx="left"><h3><em>✗</em>家里连续家务</h3><p>动辄几十步 · 环境多变 · 还要等</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 预测 -->
+<section class="scene" data-beat="fc">
+  <div class="pad">
+    <div class="kicker" style="font-size:38px" data-at="+0.1" data-fx="left">我们的判断</div>
+    <div class="fcard" data-at="fc.1+0.3">
+      <div class="fl">预测 · 可对账</div>
+      <div class="ft"><span data-type data-tat="fc.2-0.2" data-td="3.6">2027 年底前，没有任何公司向普通家庭批量交付（超过 1 万台）能完成多步家务的通用人形机器人。</span></div>
+      <div class="fmeta" data-at="fc.3-0.1">
+        <span>把握度<b>高</b> <span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></span>
+        <span>对账时间<b>2027 年底</b></span>
+      </div>
+      <div class="stamp" data-at="fc.3$-1.2" data-fx="pop" data-d="0.5">到期对账</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 结尾 -->
+<section class="scene" data-beat="outro" data-tr="zoom">
+  <div class="pad end">
+    <div class="t" data-at="+0.1" data-fx="blur" data-d="0.9">准讯周报</div>
+    <div class="r" data-at="+0.4" data-fx="wipe" data-d="0.8"></div>
+    <div class="s" data-at="+0.7">每条新闻 · <span>一个判断</span></div>
+    <div class="s" data-at="+1.1" style="margin-top:14px">每个判断 · <span>到期对账</span></div>
+    <div><div class="u" data-at="outro.1$-0.2">mengxiaocc1.github.io/zhoubao</div></div>
+  </div>
+</section>
+
+<div id="cap" data-max="18"><span></span></div>
+
+<script src="build/timeline.js"></script>
+<script>
+(function(){
+  // ---- 失误率方格 ----
+  function grid(id,errs,at){var g=document.getElementById(id);for(var i=0;i<100;i++){var c=document.createElement('i');var k=errs.indexOf(i);if(k>=0){c.className='e';c.dataset.at=at+'+'+(k*0.12).toFixed(2);c.dataset.fx='pop';c.dataset.d='0.4';}g.appendChild(c);}}
+  grid('g1',[3,17,28,41,52,66,74,85,98],'err.1+0.9');
+  grid('g2',[57],'err.1+1.5');
+
+  // ---- 曲线图 ----
+  var NS='http://www.w3.org/2000/svg',svg=document.getElementById('chart');
+  var X0=110,X1=880,Y0=30,Y1=660;
+  function X(n){return X0+(X1-X0)*n/20}function Y(v){return Y1-(Y1-Y0)*v}
+  function el(tag,attr,parent){var e=document.createElementNS(NS,tag);for(var k in attr)e.setAttribute(k,attr[k]);(parent||svg).appendChild(e);return e;}
+  var gg=el('g',{'class':'grid'});
+  [0,0.25,0.5,0.75,1].forEach(function(v){el('line',{x1:X0,x2:X1,y1:Y(v),y2:Y(v)},gg);var t=el('text',{x:X0-20,y:Y(v)+12,'text-anchor':'end','font-size':32},gg);t.textContent=(v*100)+'%';});
+  [1,3,5,10,15,20].forEach(function(n){var t=el('text',{x:X(n),y:Y1+52,'text-anchor':'middle','font-size':32});t.textContent=n;});
+  var xl=el('text',{x:X1,y:Y1+96,'text-anchor':'end','font-size':30});xl.textContent='连续做的步数 →';
+  el('line',{x1:X0,x2:X1,y1:Y(0.5),y2:Y(0.5),stroke:'var(--mut)','stroke-width':3,'stroke-dasharray':'10 10'});
+  var half=el('text',{x:X1,y:Y(0.5)-14,'text-anchor':'end','font-size':30});half.textContent='一半';
+  function path(p,color,id){var d='';for(var n=0;n<=20.001;n+=0.25)d+=(n?'L':'M')+X(n).toFixed(1)+' '+Y(Math.pow(p,n)).toFixed(1);
+    var cp=el('clipPath',{id:id});var r=el('rect',{x:0,y:0,width:0,height:760},cp);el('defs',{}).appendChild(cp);
+    el('path',{d:d,fill:'none',stroke:color,'stroke-width':9,'stroke-linecap':'round','stroke-linejoin':'round','clip-path':'url(#'+id+')'});return r;}
+  var clipB=path(0.989,'var(--ok)','cb'),clipA=path(0.91,'var(--acc)','ca');
+  var dot=el('circle',{r:16,fill:'var(--acc)',stroke:'var(--bg)','stroke-width':5});
+  var dotB=el('circle',{r:14,fill:'var(--ok)',stroke:'var(--bg)','stroke-width':5,opacity:0});
+
+  // 注释（用引擎的入场动画）
+  function ann(x,y,txt,at,anchor,color,size){var g=el('g',{'class':'ann'});g.dataset.at=at;g.dataset.fx='fade';var t=el('text',{x:x,y:y,'text-anchor':anchor||'start','font-size':size||40,fill:color||'var(--ink)'},g);t.textContent=txt;t.style.fill=color||'var(--ink)';return g;}
+  function mark(n,v,at,color,hollow){var c=el('circle',{cx:X(n),cy:Y(v),r:hollow?16:12,fill:hollow?'var(--bg)':color,stroke:color,'stroke-width':hollow?6:0});c.dataset.at=at;c.dataset.fx='pop';c.dataset.d='0.4';c.style.transformOrigin=X(n)+'px '+Y(v)+'px';c.style.transformBox='view-box';}
+  mark(3,Math.pow(.91,3),'math.3+0.2','var(--acc)');ann(X(3)+30,Y(.754)-6,'算术：75%','math.3+0.2');
+  mark(3,0.5,'math.4+0.2','var(--acc)',true);
+  var vl=el('line',{x1:X(3),x2:X(3),y1:Y(.754)+18,y2:Y(.5)-20,stroke:'var(--acc)','stroke-width':3,'stroke-dasharray':'6 8'});vl.dataset.at='math.4+0.4';vl.dataset.fx='fade';
+  ann(X(3)+28,Y(.5)+100,'实测：约 50%','math.4+0.2','start','var(--acc)',36);
+  mark(10,Math.pow(.91,10),'math.5$-0.6','var(--acc)');ann(X(10)+20,Y(.389)-24,'39%','math.5$-0.6','start','var(--ink)',46);
+  mark(20,Math.pow(.91,20),'math.6$-0.6','var(--acc)');ann(X(20),Y(.152)-30,'15%','math.6$-0.6','end','var(--ink)',46);
+  ann(X(20),Y(.801)-34,'80%','need.2-0.2','end','var(--ok)',46);
+  ann(X(12),Y(.92)-30,'每步 98.9%','need.1+0.8','middle','var(--ok)',34);
+
+  window.HOOKS=window.HOOKS||[];
+  HOOKS.push(function(t){
+    var Z=ZXV,M=TL.beats.math.lines,N=TL.beats.need;
+    // 步数随旁白推进：0→3，停住，3→10，10→20
+    var n=0;
+    n+=3*Z.E.inout(Z.prog(t,M[1].start,M[2].start+0.3-M[1].start));
+    n+=7*Z.E.inout(Z.prog(t,M[4].start,M[4].end-M[4].start-0.4));
+    n+=10*Z.E.inout(Z.prog(t,M[5].start,M[5].end-M[5].start-0.4));
+    clipA.setAttribute('width',X(n)+10);
+    dot.setAttribute('cx',X(n));dot.setAttribute('cy',Y(Math.pow(.91,n)));
+    dot.setAttribute('opacity',t>=M[1].start-0.2?1:0);
+    var k=Math.max(0,Math.round(n));
+    document.getElementById('nsup').textContent=t<M[1].start?'n':k;
+    document.getElementById('pct').textContent=Math.round(Math.pow(.91,k)*100)+'%';
+    document.getElementById('step').innerHTML=t<M[1].start?'每多一步，再乘一次 0.91':'连续做 <b>'+k+'</b> 步，成功率';
+    var nb=20*Z.E.inout(Z.prog(t,N.lines[0].start+0.3,N.lines[1].end-N.lines[0].start-0.6));
+    clipB.setAttribute('width',X(nb)+10);
+    dotB.setAttribute('cx',X(nb));dotB.setAttribute('cy',Y(Math.pow(.989,nb)));dotB.setAttribute('opacity',nb>0?1:0);
+  });
+})();
+</script>
+<script src="../lib/engine.js"></script>
+</body>
+</html>
