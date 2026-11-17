@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>样片 B · 瑞士网格数据风 · 机器人的算术题</title>
+<style>
+  :root { --bg: #F1F0EB; --ink: #111; --red: #E3261C; --grey: #8A8A85; --line: rgba(17, 17, 17, .10); --sans: "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #film { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--sans); font-feature-settings: "tnum"; }
+  .scene { position: absolute; inset: 0; visibility: hidden; }
+  .ch { display: inline-block; }
+  .abs { position: absolute; }
+
+  /* 网格与版式标记 */
+  #grid { position: absolute; inset: 0; z-index: 1; }
+  #grid i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); transform-origin: 50% 0; }
+  #meta { position: absolute; left: 90px; right: 90px; top: 118px; display: flex; justify-content: space-between; font-size: 28px; font-weight: 700; letter-spacing: .04em; z-index: 30; }
+  #meta span:last-child { color: var(--red); }
+  #metaRule { position: absolute; left: 90px; right: 90px; top: 168px; height: 4px; background: var(--ink); z-index: 30; transform-origin: 0 0; }
+  #fig { position: absolute; left: 90px; top: 186px; font-size: 24px; color: var(--grey); letter-spacing: .12em; z-index: 30; }
+  #dots { position: absolute; right: 90px; top: 188px; display: flex; gap: 10px; z-index: 30; }
+  #dots i { width: 18px; height: 18px; background: var(--line); }
+  #dots i.on { background: var(--ink); } #dots i.cur { background: var(--red); }
+  .onred #meta, .onred #meta span:last-child, .onred #fig { color: #fff; } .onred #metaRule { background: #fff; }
+  .onred #dots i { background: rgba(255,255,255,.35); } .onred #dots i.on, .onred #dots i.cur { background: #fff; }
+  .reg { position: absolute; width: 36px; height: 36px; z-index: 30; }
+  .reg::before, .reg::after { content: ""; position: absolute; background: var(--ink); }
+  .reg::before { left: 17px; top: 0; width: 2px; height: 36px; } .reg::after { top: 17px; left: 0; height: 2px; width: 36px; }
+
+  .lab { font-size: 54px; font-weight: 900; letter-spacing: .01em; }
+  .note { font-size: 30px; color: var(--grey); letter-spacing: .04em; font-weight: 400; }
+  .huge { font-weight: 900; letter-spacing: -.05em; line-height: .8; white-space: nowrap; }
+  .huge .pc { font-size: .5em; letter-spacing: 0; margin-left: .04em; }
+
+  /* B2 红场 */
+  #s2 .redfield { position: absolute; inset: 0; background: var(--red); color: #fff; }
+  #s2 .note { color: rgba(255, 255, 255, .8); }
+
+  /* B3 宣言 */
+  .stmt { font-size: 112px; font-weight: 900; line-height: 1.3; letter-spacing: -.01em; }
+  .stmt .ln { display: block; overflow: hidden; white-space: nowrap; }
+  .stmt .ln > span { display: inline-block; }
+  .stmt em { font-style: normal; color: var(--red); }
+
+  /* B4 连乘 */
+  .chart { position: absolute; left: 90px; top: 1010px; width: 900px; height: 560px; }
+  .chart svg { overflow: visible; }
+  .chart .ax { font-size: 26px; fill: var(--grey); font-family: var(--sans); }
+  .chart .cp { font-size: 40px; font-weight: 900; font-family: var(--sans); }
+  .steps { position: absolute; left: 90px; top: 900px; display: grid; grid-template-columns: repeat(20, 1fr); gap: 6px; width: 900px; }
+  .steps i { height: 28px; background: var(--line); }
+
+  /* B5 对比条 */
+  .cmp { position: absolute; left: 90px; right: 90px; }
+  .cmp .bl { font-size: 36px; font-weight: 700; margin-bottom: 14px; display: flex; justify-content: space-between; }
+  .cmp .bar { height: 130px; background: var(--line); position: relative; }
+  .cmp .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--grey); }
+  .cmp .bar.r i { background: var(--red); }
+  .cmp .bv { font-size: 96px; font-weight: 900; letter-spacing: -.03em; }
+
+  /* B7 结论 */
+  .verdict { position: absolute; left: 90px; right: 90px; padding: 44px 0 50px; border-top: 4px solid var(--ink); }
+  .verdict .k { display: flex; align-items: center; gap: 22px; font-size: 44px; font-weight: 900; }
+  .verdict .k i { width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; font-style: normal; color: #fff; font-size: 46px; background: var(--ink); }
+  .verdict.no .k i { background: var(--red); }
+  .verdict .v { font-size: 66px; font-weight: 900; line-height: 1.3; margin-top: 26px; }
+  .verdict .v small { display: block; font-size: 34px; font-weight: 400; color: var(--grey); margin-top: 12px; }
+
+  /* B8 预测 + 结尾 */
+  .fc { position: absolute; left: 90px; right: 90px; top: 420px; background: var(--ink); color: #fff; padding: 60px 64px 64px; box-sizing: border-box; }
+  .fc .h { display: flex; justify-content: space-between; font-size: 32px; letter-spacing: .1em; font-weight: 700; }
+  .fc .h span:last-child { color: #ff7a70; }
+  .fc .t { font-size: 58px; font-weight: 900; line-height: 1.45; margin-top: 40px; }
+  .fc .c { display: flex; align-items: center; gap: 12px; margin-top: 44px; font-size: 32px; }
+  .fc .c i { width: 26px; height: 26px; border-radius: 50%; background: var(--red); display: inline-block; }
+  .sign { position: absolute; left: 90px; right: 90px; top: 1180px; }
+  .sign .w { font-size: 92px; font-weight: 900; line-height: 1.2; }
+  .sign .u { font-size: 38px; margin-top: 30px; font-weight: 700; color: var(--red); }
+</style>
+</head>
+<body>
+<div id="film">
+  <div id="grid"></div>
+  <div id="meta"><span>准讯周报 W45 · 第 10 条</span><span>机器人</span></div>
+  <div id="metaRule"></div>
+  <div id="fig"></div>
+  <div id="dots"></div>
+  <div class="reg" style="left:36px; top:1848px"></div><div class="reg" style="right:36px; top:1848px"></div>
+
+  <!-- B1 91% -->
+  <section class="scene" id="s1">
+    <div class="abs lab" style="left:90px; top:430px">单个动作的成功率</div>
+    <div class="abs note" style="left:90px; top:510px">苹果 HALO · 宇树 G1 · 360 次真机测试</div>
+    <div class="abs huge" style="left:70px; top:700px; font-size:500px"><span class="n">0</span><span class="pc">%</span></div>
+  </section>
+
+  <!-- B2 50% -->
+  <section class="scene" id="s2">
+    <div class="redfield">
+      <div class="abs lab" style="left:90px; top:430px">三个动作连起来做</div>
+      <div class="abs note" style="left:90px; top:510px">钻过障碍 → 行走 → 推箱子</div>
+      <div class="abs huge" style="left:70px; top:700px; font-size:500px"><span class="n">91</span><span class="pc">%</span></div>
+      <div class="abs lab" style="left:90px; top:1180px; font-size:64px">只剩一半</div>
+    </div>
+  </section>
+
+  <!-- B3 宣言 -->
+  <section class="scene" id="s3">
+    <div class="abs stmt" style="left:90px; top:560px">
+      <span class="ln"><span>一道<em>算术题</em>，</span></span>
+      <span class="ln"><span>决定人形机器人</span></span>
+      <span class="ln"><span>何时进家门。</span></span>
+    </div>
+  </section>
+
+  <!-- B4 连乘 -->
+  <section class="scene" id="s4">
+    <div class="abs lab" style="left:90px; top:300px">如果每一步都是 91%</div>
+    <div class="abs note" style="left:90px; top:380px">连续做下去，成功率 = 0.91 × 0.91 × …</div>
+    <div class="abs" style="left:90px; top:520px; font-size:44px; font-weight:900">第 <span id="stepN" style="color:var(--red)">1</span> 步</div>
+    <div class="abs huge" style="left:70px; top:590px; font-size:280px"><span id="rate">91</span><span class="pc">%</span></div>
+    <div class="steps" id="steps"></div>
+    <div class="chart"><svg id="chart" width="900" height="560"></svg></div>
+  </section>
+
+  <!-- B5 现实更糟 -->
+  <section class="scene" id="s5">
+    <div class="abs lab" style="left:90px; top:330px; font-size:84px">现实比算术更糟</div>
+    <div class="cmp" style="top:560px">
+      <div class="bl"><span>按 0.91³ 推算 · 三步</span></div>
+      <div class="bar"><i id="b1"></i></div>
+      <div class="bv" id="bv1">0%</div>
+    </div>
+    <div class="cmp" style="top:900px">
+      <div class="bl"><span>苹果实测 · 三步</span></div>
+      <div class="bar r"><i id="b2"></i></div>
+      <div class="bv" id="bv2" style="color:var(--red)">0%</div>
+    </div>
+    <div class="abs" style="left:90px; right:90px; top:1300px; font-size:46px; font-weight:700; line-height:1.55" id="why5">每一步难度不同，前一步的偏差还会传给下一步。</div>
+  </section>
+
+  <!-- B6 98.9% -->
+  <section class="scene" id="s6">
+    <div class="abs lab" style="left:90px; top:330px">想让 20 步之后还有八成成功率</div>
+    <div class="abs lab" style="left:90px; top:420px; color:var(--grey)">每一步都得做到</div>
+    <div class="abs huge" style="left:70px; top:600px; font-size:330px; color:var(--red)"><span id="r6">91.0</span><span class="pc">%</span></div>
+    <div class="abs" style="left:90px; right:90px; top:1000px; border-top:4px solid var(--ink); padding-top:40px">
+      <div style="font-size:52px; font-weight:900; line-height:1.45">失误率要从 9% 压到 1% 左右，<br>约为原来的<span style="color:var(--red)">九分之一</span>。</div>
+      <div class="note" style="margin-top:24px">这是最难的一段路。</div>
+    </div>
+  </section>
+
+  <!-- B7 结论 -->
+  <section class="scene" id="s7">
+    <div class="abs lab" style="left:90px; top:330px; font-size:72px">所以在那之前</div>
+    <div class="verdict" style="top:520px"><div class="k"><i>✓</i>适合</div><div class="v">工厂里的固定工序<small>步骤少、环境固定：搬运、质检</small></div></div>
+    <div class="verdict no" style="top:920px"><div class="k"><i>✕</i>还不适合</div><div class="v">家里的连续家务<small>动辄几十步，环境天天在变</small></div></div>
+  </section>
+
+  <!-- B8 预测 + 结尾 -->
+  <section class="scene" id="s8">
+    <div class="fc">
+      <div class="h"><span>我们的预测</span><span>2027 年底前</span></div>
+      <div class="t">没有任何公司向普通家庭批量交付（超过 1 万台）能做多步家务的通用人形机器人。</div>
+      <div class="c">把握度 高　<i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="sign"><div class="w">更多判断，<br>看本周周报</div><div class="u">mengxiaocc1.github.io/zhoubao</div></div>
+  </section>
+</div>
+
+<script src="../../engine/engine.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = V.$, $$ = V.$$, css = V.css, P = V.prog, E = V.ease, lerp = V.lerp;
+  var film = new V.Film({ w: 1080, h: 1920, fps: 30, music: 'swiss', root: $('#film') });
+
+  /* 网格 */
+  for (var i = 0; i <= 6; i++) { var g = document.createElement('i'); g.style.left = (90 + i * 150) + 'px'; $('#grid').appendChild(g); }
+  var gridLines = $$('#grid i');
+  var figs = [];
+  function fig(name, sc) { figs.push({ t: sc.start, name: name }); }
+  function slide(el, lt, dur, o) {           /* 瑞士风：硬切 + 短位移 */
+    o = o || {};
+    var a = E.out5(P(lt, 0, 0.35)), b = E.in3(P(lt, dur - 0.05, dur + 0.3));
+    css(el, { opacity: Math.min(1, a * 1.4) * (1 - b), transform: 'translateX(' + ((1 - a) * (o.dx || 60) - b * 120) + 'px)' });
+  }
+
+  /* B1 91% */
+  fig('FIG. 01 — 单步', film.scene(4.4, $('#s1'), function (lt, dur) {
+    var b = P(lt, dur, dur + 0.01);
+    css($('#s1'), { opacity: 1 - b });
+    css($('#s1 .lab'), { opacity: P(lt, 0.2, 0.4), transform: 'translateX(' + (1 - E.out5(P(lt, 0.2, 0.6))) * 40 + 'px)' });
+    css($('#s1 .note'), { opacity: P(lt, 0.5, 0.8) });
+    var q = E.outExpo(P(lt, 0.6, 2.0));
+    $('#s1 .n').textContent = Math.round(91 * q);
+    css($('#s1 .huge'), { opacity: P(lt, 0.6, 0.7) });
+  }, { post: 0.01, cues: [[0.2, 'hit'], [0.6, 'count', 1.4]] }));
+
+  /* B2 红场 50% */
+  fig('FIG. 02 — 三步', film.scene(4.6, $('#s2'), function (lt, dur) {
+    var w = E.inOut3(P(lt, 0, 0.45));
+    css($('#s2 .redfield'), { clipPath: 'inset(' + (1 - w) * 100 + '% 0 0 0)' });
+    var q = E.outExpo(P(lt, 0.8, 2.0));
+    $('#s2 .n').textContent = Math.round(lerp(91, 50, q));
+    css($('#s2 .lab'), { opacity: P(lt, 0.4, 0.6) });
+    css($('#s2 .note'), { opacity: P(lt, 0.6, 0.9) });
+    var l = $$('#s2 .lab')[1]; css(l, { opacity: P(lt, 2.2, 2.4), transform: 'translateX(' + (1 - E.out5(P(lt, 2.2, 2.6))) * 40 + 'px)' });
+    css($('#s2'), { opacity: 1 - P(lt, dur, dur + 0.01) });
+  }, { post: 0.01, cues: [[0, 'wipe'], [0.8, 'countdown', 1.2], [2.2, 'hit', 0.8]] }));
+
+  /* B3 宣言 */
+  var lns = $$('#s3 .ln > span');
+  fig('FIG. 03', film.scene(4.6, $('#s3'), function (lt, dur) {
+    lns.forEach(function (l, i) {
+      var a = E.out5(P(lt, 0.15 + i * 0.35, 0.75 + i * 0.35));
+      css(l, { transform: 'translateY(' + (1 - a) * 110 + '%)' });
+    });
+    css($('#s3'), { opacity: 1 - P(lt, dur, dur + 0.01) });
+  }, { post: 0.01, cues: [[0.15, 'thump'], [0.5, 'thump'], [0.85, 'thump']] }));
+
+  /* B4 连乘 */
+  var steps = $('#steps');
+  for (var k = 0; k < 20; k++) steps.appendChild(document.createElement('i'));
+  var stepEls = $$('#steps i');
+  var svg = $('#chart'), NS = 'http://www.w3.org/2000/svg';
+  function el(tag, at) { var e = document.createElementNS(NS, tag); for (var a in at) e.setAttribute(a, at[a]); svg.appendChild(e); return e; }
+  var CW = 900, CH = 440, X = function (n) { return (n - 1) / 19 * (CW - 40) + 20; }, Y = function (v) { return CH - v / 100 * CH; };
+  [0, 25, 50, 75, 100].forEach(function (v) {
+    el('line', { x1: 0, x2: CW, y1: Y(v), y2: Y(v), stroke: 'rgba(17,17,17,.12)', 'stroke-width': v === 0 ? 3 : 1 });
+  });
+  [1, 5, 10, 15, 20].forEach(function (n) { el('text', { x: X(n), y: CH + 44, 'text-anchor': 'middle', class: 'ax' }).textContent = n + ' 步'; });
+  var line = el('polyline', { fill: 'none', stroke: '#111', 'stroke-width': 6, 'stroke-linejoin': 'round' });
+  var head = el('circle', { r: 14, fill: '#E3261C' });
+  var CPS = [1, 3, 5, 10, 20], cpEls = CPS.map(function (n) {
+    var v = Math.round(Math.pow(0.91, n) * 100);
+    return { n: n, dot: el('circle', { cx: X(n), cy: Y(v), r: 10, fill: n === 20 ? '#E3261C' : '#111' }),
+      tx: (function () { var t = el('text', { x: X(n), y: Y(v) - 30, 'text-anchor': n === 20 ? 'end' : 'middle', class: 'cp', fill: n === 20 ? '#E3261C' : '#111' }); t.textContent = v + '%'; return t; })() };
+  });
+  var bracket = el('text', { x: X(20), y: Y(62), 'text-anchor': 'end', class: 'cp', fill: '#E3261C' });
+  bracket.textContent = '20 步之后，只剩 15%';
+  var S4T0 = 1.4, STEP = 0.36;
+  var s4cues = [[0, 'hit', 0.7]];
+  for (var n = 1; n <= 20; n++) s4cues.push([S4T0 + (n - 1) * STEP, 'blip', n]);
+  s4cues.push([S4T0 + 19 * STEP + 0.6, 'hit']);
+  fig('FIG. 04 — 0.91ⁿ', film.scene(14.6, $('#s4'), function (lt, dur) {
+    slide($('#s4'), lt, dur, { dx: 0 });
+    var nf = V.clamp(1 + (lt - S4T0) / STEP, 1, 20), ni = Math.floor(nf + 1e-6);
+    if (lt < S4T0) nf = 1, ni = 1;
+    var shown = lt >= S4T0 - 0.2;
+    $('#stepN').textContent = ni;
+    $('#rate').textContent = Math.round(Math.pow(0.91, ni) * 100);
+    css($('#rate').parentNode, { color: ni >= 20 ? 'var(--red)' : 'var(--ink)' });
+    stepEls.forEach(function (s, i) { s.style.background = i < ni && shown ? (i === ni - 1 ? '#E3261C' : '#111') : 'rgba(17,17,17,.10)'; });
+    var pts = [];
+    for (var j = 1; j <= Math.floor(nf); j++) pts.push(X(j) + ',' + Y(Math.pow(0.91, j) * 100));
+    var fr = nf - Math.floor(nf);
+    if (fr > 0 && nf < 20) { var a = Math.floor(nf); pts.push(lerp(X(a), X(a + 1), fr) + ',' + Y(lerp(Math.pow(0.91, a), Math.pow(0.91, a + 1), fr) * 100)); }
+    line.setAttribute('points', shown ? pts.join(' ') : '');
+    var lp = pts[pts.length - 1].split(',');
+    head.setAttribute('cx', lp[0]); head.setAttribute('cy', lp[1]);
+    head.style.opacity = shown ? 1 : 0;
+    cpEls.forEach(function (c) { var on = shown && ni >= c.n; c.dot.style.opacity = on ? 1 : 0; c.tx.style.opacity = on ? 1 : 0; });
+    css(bracket, { opacity: P(lt, S4T0 + 19 * STEP + 0.6, S4T0 + 19 * STEP + 0.9) });
+    css($$('#s4 .lab')[0], { opacity: P(lt, 0.1, 0.3) });
+    css($('#s4 .note'), { opacity: P(lt, 0.4, 0.7) });
+  }, { cues: s4cues }));
+
+  /* B5 现实更糟 */
+  fig('FIG. 05 — 实测', film.scene(7, $('#s5'), function (lt, dur) {
+    slide($('#s5'), lt, dur);
+    var a = E.out5(P(lt, 0.8, 1.8)), b = E.out5(P(lt, 2.2, 3.2));
+    $('#b1').style.width = 75 * a + '%'; $('#bv1').textContent = Math.round(75 * a) + '%';
+    $('#b2').style.width = 50 * b + '%'; $('#bv2').textContent = '≈' + Math.round(50 * b) + '%';
+    css($('#bv2'), { opacity: P(lt, 2.2, 2.3) }); css($('#bv1'), { opacity: P(lt, 0.8, 0.9) });
+    css($('#why5'), { opacity: P(lt, 3.8, 4.3) });
+  }, { cues: [[0, 'wipe', 0.6], [0.8, 'rise'], [2.2, 'rise'], [3.2, 'hit', 0.7]] }));
+
+  /* B6 98.9% */
+  fig('FIG. 06 — 门槛', film.scene(7.4, $('#s6'), function (lt, dur) {
+    slide($('#s6'), lt, dur);
+    $$('#s6 .lab').forEach(function (l, i) { css(l, { opacity: P(lt, 0.2 + i * 0.4, 0.5 + i * 0.4) }); });
+    var q = E.outExpo(P(lt, 1.0, 2.6));
+    $('#r6').textContent = lerp(91, 98.9, q).toFixed(1);
+    css($('#r6').parentNode, { opacity: P(lt, 1.0, 1.1) });
+    css($('#r6').parentNode.nextElementSibling, { opacity: P(lt, 3.0, 3.5) });
+  }, { cues: [[0, 'wipe', 0.6], [1.0, 'count', 1.6], [3.0, 'hit', 0.7]] }));
+
+  /* B7 结论 */
+  fig('FIG. 07 — 结论', film.scene(6.6, $('#s7'), function (lt, dur) {
+    slide($('#s7'), lt, dur);
+    $$('#s7 .verdict').forEach(function (v, i) {
+      var a = E.out5(P(lt, 0.6 + i * 1.6, 1.0 + i * 1.6));
+      css(v, { opacity: a, transform: 'translateY(' + (1 - a) * 50 + 'px)' });
+    });
+  }, { cues: [[0, 'wipe', 0.6], [0.6, 'thump'], [2.2, 'thump']] }));
+
+  /* B8 预测 + 结尾 */
+  fig('FIG. 08 — 预测', film.scene(7.4, $('#s8'), function (lt, dur) {
+    slide($('#s8'), lt, dur + 1);
+    var a = E.out5(P(lt, 0.1, 0.6));
+    css($('#s8 .fc'), { clipPath: 'inset(0 ' + (1 - a) * 100 + '% 0 0)' });
+    $$('#s8 .fc .c i').forEach(function (d, i) { css(d, { transform: 'scale(' + E.outBack(P(lt, 1.6 + i * 0.12, 1.9 + i * 0.12)) + ')' }); });
+    var s = E.out5(P(lt, 3.0, 3.6));
+    css($('#s8 .sign'), { opacity: s, transform: 'translateY(' + (1 - s) * 40 + 'px)' });
+    css($('#s8'), { opacity: 1 - P(lt, dur - 0.6, dur) });
+  }, { post: 0, cues: [[0.1, 'wipe', 0.6], [1.6, 'blip', 21], [3.0, 'hit', 0.8], [6.2, 'end']] }));
+
+  /* 版式层 */
+  for (var d = 0; d < 8; d++) $('#dots').appendChild(document.createElement('i'));
+  var dotEls = $$('#dots i');
+  var grain = V.grain($('#film'), 0.06);
+  film.overlay(function (t, f) {
+    var cur = 0; figs.forEach(function (x, i) { if (t >= x.t) cur = i; });
+    $('#fig').textContent = figs[cur].name;
+    dotEls.forEach(function (d, i) { d.className = i < cur ? 'on' : i === cur ? 'cur' : ''; });
+    gridLines.forEach(function (g, i) { g.style.transform = 'scaleY(' + E.out3(P(t, i * 0.05, 0.6 + i * 0.05)) + ')'; });
+    css($('#metaRule'), { transform: 'scaleX(' + E.out5(P(t, 0, 0.6)) + ')' });
+    var onRed = t >= film.scenes[1].start + 0.3 && t < film.scenes[2].start;
+    $('#film').classList.toggle('onred', onRed);
+    grain(f);
+  });
+  film.publish();
+})();
+</script>
+</body>
+</html>

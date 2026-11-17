@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>样片 C · 深色快讯风 · 本周 4 个数字</title>
+<style>
+  :root { --bg: #0C0C0B; --ink: #F2EFE8; --mut: #8F8B82; --dim: #2A2926; --red: #FF4B3E; --amber: #FFB547; --blue: #8CC1E0; --sans: "Noto Sans CJK SC", "Noto Sans SC", sans-serif; --serif: "Noto Serif CJK SC", serif; }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #film { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; background: radial-gradient(90% 90% at 30% 40%, #1A1917 0%, var(--bg) 70%); color: var(--ink); font-family: var(--sans); font-feature-settings: "tnum"; }
+  #film::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 3px); pointer-events: none; z-index: 45; }
+  .scene { position: absolute; inset: 0; visibility: hidden; }
+  .ch { display: inline-block; }
+  .abs { position: absolute; }
+
+  /* 常驻：顶栏、计数、底部滚动条 */
+  #top { position: absolute; left: 120px; right: 120px; top: 56px; display: flex; align-items: center; gap: 22px; font-size: 26px; letter-spacing: .08em; z-index: 30; }
+  #top .badge { background: var(--red); color: #fff; font-weight: 900; padding: 6px 14px; display: flex; align-items: center; gap: 10px; letter-spacing: .1em; }
+  #top .badge i { width: 12px; height: 12px; border-radius: 50%; background: #fff; display: inline-block; }
+  #top .t { color: var(--mut); }
+  #top .t b { color: var(--ink); font-weight: 700; }
+  #top .cnt { margin-left: auto; font-size: 30px; font-weight: 900; letter-spacing: .06em; }
+  #top .cnt span { color: var(--mut); font-weight: 400; }
+  #ticker { position: absolute; left: 0; right: 0; top: 972px; height: 64px; background: #050505; border-top: 1px solid var(--dim); display: flex; align-items: center; z-index: 30; overflow: hidden; }
+  #ticker .lb { flex: none; height: 100%; display: flex; align-items: center; padding: 0 28px 0 120px; background: var(--amber); color: #111; font-weight: 900; font-size: 26px; letter-spacing: .12em; position: relative; z-index: 2; }
+  #ticker .tape { white-space: nowrap; font-size: 27px; color: #CFCBC2; position: relative; left: 0; }
+  #ticker .tape b { color: var(--amber); margin: 0 26px; font-weight: 400; }
+  #flash { position: absolute; inset: 0; background: #fff; z-index: 40; pointer-events: none; opacity: 0; }
+
+  /* 冷开场 */
+  #s0 .a { left: 0; right: 0; top: 300px; text-align: center; font-size: 104px; font-weight: 900; letter-spacing: .06em; }
+  #s0 .b { left: 0; right: 0; top: 440px; text-align: center; font-size: 250px; font-weight: 900; letter-spacing: .02em; line-height: 1; }
+  #s0 .b em { font-style: normal; color: var(--red); }
+  #s0 .c { left: 0; right: 0; top: 760px; text-align: center; font-size: 30px; color: var(--mut); letter-spacing: .3em; }
+
+  /* 数字页通用 */
+  .tag { left: 120px; top: 190px; font-size: 30px; font-weight: 900; letter-spacing: .14em; color: var(--amber); display: flex; align-items: center; gap: 18px; }
+  .tag i { width: 40px; height: 4px; background: var(--amber); display: inline-block; }
+  .big { left: 108px; top: 250px; font-size: 270px; font-weight: 900; letter-spacing: -.04em; line-height: 1; white-space: nowrap; }
+  .big .u { font-size: 96px; letter-spacing: 0; margin-left: 12px; font-weight: 900; }
+  .big .pre { font-size: 96px; color: var(--mut); letter-spacing: 0; margin-right: 18px; font-weight: 700; }
+  .cap { left: 120px; width: 960px; top: 600px; font-size: 54px; font-weight: 900; line-height: 1.4; }
+  .cap em { font-style: normal; color: var(--red); }
+  .sub { left: 120px; width: 960px; top: 790px; font-size: 30px; color: var(--mut); line-height: 1.6; letter-spacing: .02em; }
+  .vis { left: 1180px; top: 170px; width: 620px; height: 760px; }
+
+  /* 圆环 */
+  .ring text { font-family: var(--sans); }
+  /* 方块 */
+  .blocks { position: absolute; left: 0; top: 120px; display: grid; grid-template-columns: repeat(5, 104px); gap: 18px; }
+  .blocks i { height: 104px; background: var(--red); display: block; }
+  .blocks i:first-child { background: var(--ink); }
+  .bk-l { position: absolute; font-size: 28px; color: var(--mut); }
+  .bk-n { position: absolute; left: 0; top: 560px; font-size: 120px; font-weight: 900; color: var(--red); letter-spacing: -.02em; }
+  .bk-n small { font-size: 34px; color: var(--mut); font-weight: 400; margin-left: 16px; letter-spacing: 0; }
+  /* 时间条 */
+  .tbar { position: absolute; left: 0; right: 0; }
+  .tbar .l { font-size: 30px; color: var(--mut); margin-bottom: 14px; display: flex; justify-content: space-between; }
+  .tbar .l b { color: var(--ink); font-size: 40px; }
+  .tbar .bar { height: 90px; background: var(--dim); position: relative; }
+  .tbar .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: #77736A; }
+  .tbar.hi .bar i { background: var(--red); }
+  .tbar.hi .l b { color: var(--red); }
+  /* 连乘 */
+  .chain { position: absolute; left: 0; top: 140px; display: flex; align-items: center; gap: 16px; }
+  .chain .c { width: 168px; height: 168px; border-radius: 50%; border: 6px solid var(--ink); display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 900; box-sizing: border-box; }
+  .chain .x { font-size: 44px; color: var(--mut); }
+  .res { position: absolute; left: 0; right: 0; font-size: 40px; display: flex; justify-content: space-between; align-items: baseline; border-top: 2px solid var(--dim); padding-top: 22px; }
+  .res b { font-size: 96px; font-weight: 900; letter-spacing: -.02em; }
+  .res.hi b { color: var(--red); }
+  .res span { color: var(--mut); }
+
+  /* 下周看点 */
+  .cal-h { left: 120px; top: 170px; font-size: 76px; font-weight: 900; }
+  .cal { position: absolute; left: 120px; right: 120px; display: grid; grid-template-columns: 330px 1fr; align-items: center; border-top: 2px solid var(--dim); padding: 28px 0; }
+  .cal .d { font-size: 52px; font-weight: 900; color: var(--amber); letter-spacing: -.01em; }
+  .cal .t { font-size: 50px; font-weight: 900; }
+  .cal .n { font-size: 28px; color: var(--mut); margin-top: 8px; }
+
+  /* 结尾 */
+  #s6 .m { left: 0; right: 0; top: 280px; text-align: center; font-family: var(--serif); font-weight: 900; font-size: 170px; letter-spacing: .08em; }
+  #s6 .s { left: 0; right: 0; top: 520px; text-align: center; font-size: 40px; color: var(--mut); letter-spacing: .1em; }
+  #s6 .s b { color: var(--ink); font-size: 56px; margin: 0 8px; }
+  #s6 .u { left: 0; right: 0; top: 680px; text-align: center; }
+  #s6 .u span { display: inline-block; font-size: 44px; font-weight: 700; padding: 18px 40px; border: 3px solid var(--red); color: var(--ink); letter-spacing: .02em; }
+</style>
+</head>
+<body>
+<div id="film">
+  <div id="top"><div class="badge"><i></i>W45</div><div class="t"><b>准讯周报</b>　·　本周 4 个数字</div><div class="cnt" id="cnt"></div></div>
+  <div id="ticker"><div class="lb">本周还发生了</div><div class="tape" id="tape"></div></div>
+  <div id="flash"></div>
+
+  <section class="scene" id="s0">
+    <div class="abs a">本周 AI 圈</div>
+    <div class="abs b"><em>4</em> 个数字</div>
+    <div class="abs c">2026 · W45 · 11.03 — 11.10</div>
+  </section>
+
+  <!-- 01 58% -->
+  <section class="scene num" id="s1">
+    <div class="abs tag"><i></i>01 · 账本</div>
+    <div class="abs big"><span class="n" data-to="58">0</span><span class="u">%</span></div>
+    <div class="abs cap">Anthropic 三季度：每收 100 美元，<br><em>58 美元</em>花在了算力上</div>
+    <div class="abs sub">上季度约 48% · 经营利润由盈转亏，−5.67 亿美元 · 来源：S-1/A 招股书</div>
+    <div class="abs vis"><svg class="ring" width="620" height="620" viewBox="0 0 620 620" style="margin-top:50px">
+      <circle cx="310" cy="310" r="240" fill="none" stroke="#2A2926" stroke-width="54"/>
+      <circle id="ringV" cx="310" cy="310" r="240" fill="none" stroke="#FF4B3E" stroke-width="54" transform="rotate(-90 310 310)" stroke-dasharray="1508" stroke-dashoffset="1508"/>
+      <line id="ringM" x1="310" y1="38" x2="310" y2="112" stroke="#F2EFE8" stroke-width="5" transform="rotate(172.8 310 310)"/>
+      <text id="ringML" x="0" y="0" font-size="30" fill="#8F8B82" text-anchor="middle">上季 48%</text>
+      <text x="310" y="290" font-size="46" fill="#CFCBC2" text-anchor="middle">算力成本</text>
+      <text x="310" y="354" font-size="46" fill="#CFCBC2" text-anchor="middle">÷ 收入</text>
+    </svg></div>
+  </section>
+
+  <!-- 02 8954 亿美元 -->
+  <section class="scene num" id="s2">
+    <div class="abs tag"><i></i>02 · 承诺</div>
+    <div class="abs big" style="font-size:212px; top:290px"><span class="n" data-to="8954">0</span><span class="u" style="font-size:80px">亿美元</span></div>
+    <div class="abs cap">Anthropic 已经签下的<br><em>长期采购承诺</em></div>
+    <div class="abs sub">几乎全是算力与基础设施，多为「照付不议」：用不用都得付钱</div>
+    <div class="abs vis">
+      <div class="bk-l" style="left:0; top:60px"><b style="color:#F2EFE8">■</b> 1 格 = 当前年化收入　　<b style="color:#FF4B3E">■</b> 承诺规模</div>
+      <div class="blocks" id="blocks"></div>
+      <div class="bk-n">≈ 13 倍<small>年化收入</small></div>
+    </div>
+  </section>
+
+  <!-- 03 30 小时 -->
+  <section class="scene num" id="s3">
+    <div class="abs tag"><i></i>03 · 科研</div>
+    <div class="abs big"><span class="pre"><span id="pre3">11 天</span> →</span><span class="n" data-to="30" data-from="264">0</span><span class="u">小时</span></div>
+    <div class="abs cap">AI 把费马大定理的证明，<br>写成了<em>机器可逐行检查</em>的形式</div>
+    <div class="abs sub">约 1000 个智能体并行、无人指导 · 两个月提速近 9 倍 · 数据为 Anthropic 自述</div>
+    <div class="abs vis">
+      <div class="tbar" style="top:150px"><div class="l"><span>2026 年 9 月 · 数十个智能体</span><b>264 小时</b></div><div class="bar"><i id="tb1"></i></div></div>
+      <div class="tbar hi" style="top:390px"><div class="l"><span>2026 年 11 月 · 约 1000 个</span><b>28.7 小时</b></div><div class="bar"><i id="tb2"></i></div></div>
+    </div>
+  </section>
+
+  <!-- 04 91% → 50% -->
+  <section class="scene num" id="s4">
+    <div class="abs tag"><i></i>04 · 机器人</div>
+    <div class="abs big"><span class="pre">91% →</span><span class="n" data-to="50" data-from="91">91</span><span class="u">%</span></div>
+    <div class="abs cap">人形机器人：单个动作 91%，<br>三个动作连起来，<em>只剩一半</em></div>
+    <div class="abs sub">苹果 HALO · 360 次真机测试 · 每一步的误差会连乘累积</div>
+    <div class="abs vis">
+      <div class="chain"><div class="c">91%</div><span class="x">×</span><div class="c">91%</div><span class="x">×</span><div class="c">91%</div></div>
+      <div class="res" style="top:420px"><span>纯算术推算</span><b id="r4a">75%</b></div>
+      <div class="res hi" style="top:580px"><span>苹果实测</span><b>≈50%</b></div>
+    </div>
+  </section>
+
+  <!-- 下周看点 -->
+  <section class="scene" id="s5">
+    <div class="abs cal-h">接下来要盯的</div>
+    <div class="cal" style="top:330px"><div class="d">11.17</div><div><div class="t">英伟达发布季度财报</div><div class="n">此前指引收入 1080 亿美元 · 看管理层如何回应治理问题</div></div></div>
+    <div class="cal" style="top:520px"><div class="d">11 月中下旬</div><div><div class="t">Anthropic 在纳斯达克挂牌</div><div class="n">媒体称在 11.19—20 前后，未经公司确认 · 看最终估值</div></div></div>
+    <div class="cal" style="top:710px"><div class="d">12 月起</div><div><div class="t">ChatGPT 与 Codex 统一额度生效</div><div class="n">看额度大小，以及超额之后怎么收费</div></div></div>
+  </section>
+
+  <!-- 结尾 -->
+  <section class="scene" id="s6">
+    <div class="abs m">准讯周报</div>
+    <div class="abs s"><b>12</b>条新闻　·　<b>39</b>条带把握度的预测　·　每周更新</div>
+    <div class="abs u"><span>mengxiaocc1.github.io/zhoubao</span></div>
+  </section>
+</div>
+
+<script src="../../engine/engine.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = V.$, $$ = V.$$, css = V.css, P = V.prog, E = V.ease, lerp = V.lerp;
+  var film = new V.Film({ w: 1920, h: 1080, fps: 30, music: 'news', root: $('#film') });
+  var flashes = [], counters = [];
+
+  /* 底部滚动条 */
+  var heads = ['Claude 5.2 降价 20%，最强能力改为凭资质使用', 'OpenAI 首批 110 亿美元到账，ChatGPT 准备按量计费', '英伟达董事会启动独立调查', '谷歌一年推出四款 TPU',
+    'Token 上了双 11 货架', '苹果全年利润创纪录，却被内存涨价咬了一口', '兰德：新人的练手活被 AI 做完了', 'OpenAI 披露：旗舰模型会在安全研究任务上隐蔽地降低表现'];
+  $('#tape').innerHTML = heads.concat(heads).map(function (h) { return h + '<b>／</b>'; }).join('');
+
+  function enterNum(sc, lt, dur) {
+    var a = E.out5(P(lt, 0, 0.4)), b = E.in3(P(lt, dur - 0.1, dur + 0.25));
+    css(sc, { opacity: 1 - b, transform: 'translateX(' + ((1 - a) * 80 - b * 160) + 'px)' });
+    /* 故障切换：头几帧做色偏和错位 */
+    var g = P(lt, 0, 0.18), on = g > 0 && g < 1;
+    css($('.big', sc), { textShadow: on ? (12 * (1 - g)) + 'px 0 rgba(255,75,62,.8), ' + (-12 * (1 - g)) + 'px 0 rgba(140,193,224,.8)' : 'none' });
+    css($('.tag', sc), { opacity: P(lt, 0.1, 0.3) });
+    css($('.cap', sc), { opacity: P(lt, 1.2, 1.6), transform: 'translateY(' + (1 - E.out3(P(lt, 1.2, 1.7))) * 24 + 'px)' });
+    css($('.sub', sc), { opacity: P(lt, 2.0, 2.5) });
+  }
+  function countUp(sc, lt, t0, t1, d) {
+    var n = $('.n', sc), to = +n.dataset.to, from = n.dataset.from ? +n.dataset.from : 0;
+    var v = lerp(from, to, E.outExpo(P(lt, t0, t1)));
+    n.textContent = V.fmt(v, d || 0, to >= 1000 ? ',' : false);
+  }
+
+  /* 冷开场 */
+  film.scene(3.8, $('#s0'), function (lt, dur) {
+    var a = E.out5(P(lt, 0.1, 0.5));
+    css($('#s0 .a'), { opacity: a, transform: 'translateY(' + (1 - a) * 30 + 'px)' });
+    var b = P(lt, 0.9, 1.15);
+    css($('#s0 .b'), { opacity: b > 0 ? 1 : 0, transform: 'scale(' + lerp(1.7, 1, E.out5(b)) + ')' });
+    css($('#s0 .c'), { opacity: P(lt, 1.6, 2.0) });
+    css($('#s0'), { opacity: 1 - P(lt, dur - 0.1, dur + 0.2) });
+  }, { post: 0.2, cues: [[0.1, 'riser', 0.9], [0.9, 'impact'], [1.6, 'tick']] });
+  flashes.push(0.9);
+
+  var ND = 9.4;
+  /* 01 58% */
+  var ring = $('#ringV'), C = 2 * Math.PI * 240;
+  (function () { var a = (172.8 - 90) * Math.PI / 180; var l = $('#ringML'); l.setAttribute('x', 310 + Math.cos(a) * 178); l.setAttribute('y', 310 + Math.sin(a) * 178 + 10); })();
+  var sc1 = film.scene(ND, $('#s1'), function (lt, dur) {
+    enterNum($('#s1'), lt, dur); countUp($('#s1'), lt, 0.2, 1.6);
+    ring.setAttribute('stroke-dashoffset', C * (1 - 0.58 * E.outExpo(P(lt, 0.2, 1.6))));
+    css($('#ringM'), { opacity: P(lt, 2.4, 2.7) }); css($('#ringML'), { opacity: P(lt, 2.4, 2.7) });
+  }, { cues: [[0, 'glitch'], [0.2, 'count', 1.4], [1.2, 'tick'], [2.4, 'tick']] });
+  counters.push(sc1.start); flashes.push(sc1.start);
+
+  /* 02 8954 亿美元 */
+  for (var i = 0; i < 14; i++) $('#blocks').appendChild(document.createElement('i'));
+  var blocks = $$('#blocks i');
+  var sc2 = film.scene(ND, $('#s2'), function (lt, dur) {
+    enterNum($('#s2'), lt, dur); countUp($('#s2'), lt, 0.2, 1.8);
+    blocks.forEach(function (b, i) {
+      var t0 = i === 0 ? 0.8 : 1.6 + (i - 1) * 0.12, a = E.outBack(P(lt, t0, t0 + 0.3));
+      css(b, { opacity: P(lt, t0, t0 + 0.1), transform: 'scale(' + a + ')' });
+    });
+    css($('#s2 .bk-l'), { opacity: P(lt, 0.8, 1.2) });
+    css($('#s2 .bk-n'), { opacity: P(lt, 3.3, 3.6) });
+  }, { cues: (function () { var c = [[0, 'glitch'], [0.2, 'count', 1.6], [0.8, 'blip', 1]]; for (var k = 1; k < 14; k++) c.push([1.6 + (k - 1) * 0.12, 'blip', k + 1]); c.push([3.3, 'hit', 0.8]); return c; })() });
+  counters.push(sc2.start); flashes.push(sc2.start);
+
+  /* 03 30 小时 */
+  var sc3 = film.scene(ND, $('#s3'), function (lt, dur) {
+    enterNum($('#s3'), lt, dur);
+    var n = $('#s3 .n'), q = E.outExpo(P(lt, 0.3, 1.9));
+    n.textContent = Math.round(lerp(264, 30, q));
+    css($('#pre3'), { textDecoration: lt > 0.3 ? 'line-through' : 'none', textDecorationColor: '#FF4B3E', textDecorationThickness: '6px' });
+    $('#tb1').style.width = 100 * E.out3(P(lt, 0.6, 1.4)) + '%';
+    $('#tb2').style.width = (100 * 28.7 / 264) * E.out3(P(lt, 1.8, 2.3)) + '%';
+    $$('#s3 .tbar').forEach(function (t, i) { css(t, { opacity: P(lt, 0.6 + i * 1.2, 0.8 + i * 1.2) }); });
+  }, { cues: [[0, 'glitch'], [0.3, 'countdown', 1.6], [0.6, 'swish', 0.6], [1.8, 'hit', 0.7]] });
+  counters.push(sc3.start); flashes.push(sc3.start);
+
+  /* 04 91 → 50 */
+  var sc4 = film.scene(ND, $('#s4'), function (lt, dur) {
+    enterNum($('#s4'), lt, dur); countUp($('#s4'), lt, 0.3, 1.8);
+    $$('#s4 .chain > *').forEach(function (c, i) { var t0 = 0.6 + i * 0.18, a = E.outBack(P(lt, t0, t0 + 0.35)); css(c, { opacity: P(lt, t0, t0 + 0.1), transform: 'scale(' + a + ')' }); });
+    $$('#s4 .res').forEach(function (r, i) { css(r, { opacity: P(lt, 2.0 + i * 1.0, 2.3 + i * 1.0) }); });
+  }, { cues: [[0, 'glitch'], [0.3, 'countdown', 1.5], [0.6, 'blip', 3], [0.96, 'blip', 6], [1.32, 'blip', 9], [2.0, 'tick'], [3.0, 'hit', 0.8]] });
+  counters.push(sc4.start); flashes.push(sc4.start);
+
+  /* 下周看点 */
+  var sc5 = film.scene(8.2, $('#s5'), function (lt, dur) {
+    var b = E.in3(P(lt, dur - 0.1, dur + 0.3));
+    css($('#s5'), { opacity: 1 - b });
+    var a = E.out5(P(lt, 0, 0.4));
+    css($('#s5 .cal-h'), { opacity: a, transform: 'translateX(' + (1 - a) * 60 + 'px)' });
+    $$('#s5 .cal').forEach(function (c, i) {
+      var t0 = 0.6 + i * 0.9, q = E.out5(P(lt, t0, t0 + 0.45));
+      css(c, { opacity: q, transform: 'translateX(' + (1 - q) * 120 + 'px)' });
+    });
+  }, { cues: [[0, 'glitch', 0.6], [0.6, 'tick'], [1.5, 'tick'], [2.4, 'tick']] });
+  flashes.push(sc5.start);
+
+  /* 结尾 */
+  film.scene(5, $('#s6'), function (lt, dur) {
+    var a = E.out5(P(lt, 0.1, 0.7));
+    css($('#s6 .m'), { opacity: a, transform: 'scale(' + lerp(1.15, 1, a) + ')', letterSpacing: lerp(0.3, 0.08, a) + 'em' });
+    css($('#s6 .s'), { opacity: P(lt, 0.9, 1.3) });
+    css($('#s6 .u'), { opacity: P(lt, 1.6, 2.0) });
+    css($('#s6'), { opacity: 1 - P(lt, dur - 0.7, dur) });
+  }, { post: 0, cues: [[0.1, 'impact', 0.7], [1.6, 'tick'], [4.2, 'end']] });
+
+  var grain = V.grain($('#film'), 0.12);
+  film.overlay(function (t, f) {
+    var k = 0; counters.forEach(function (c, i) { if (t >= c) k = i + 1; });
+    var inCal = t >= sc5.start;
+    $('#cnt').innerHTML = inCal ? '' : k ? '0' + k + ' <span>/ 04</span>' : '';
+    var fl = 0; flashes.forEach(function (x) { var d = t - x; if (d >= 0 && d < 0.2) fl = Math.max(fl, (1 - d / 0.2) * 0.35); });
+    $('#flash').style.opacity = fl;
+    var tw = $('#tape').scrollWidth / 2;
+    $('#tape').style.transform = 'translateX(' + (-(t * 110) % tw) + 'px)';
+    css($('#ticker'), { transform: 'translateY(' + (1 - E.out5(P(t, 1.8, 2.4))) * 80 + 'px)' });
+    css($('#top'), { opacity: P(t, 0.0, 0.4) });
+    $('#top .badge i').style.opacity = Math.floor(t * 2) % 2 ? 0.25 : 1;
+    grain(f);
+  });
+  film.publish();
+})();
+</script>
+</body>
+</html>

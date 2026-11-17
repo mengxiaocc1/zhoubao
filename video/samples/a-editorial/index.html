@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>样片 A · 纸媒社论风 · 本周主线</title>
+<style>
+  :root {
+    --bg: #F4F0E7; --paper: #FBF8F1; --ink: #1B1A18; --sec: #4A4742; --mut: #8A847A; --rule: #D6CFBF;
+    --acc: #A3271F; --acc-bg: #F3E2DD;
+    --serif: "Noto Serif CJK SC", "Noto Serif SC", serif;
+    --sans: "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #film { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--sans); }
+  #film::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(80, 60, 30, .16) 100%); z-index: 40; pointer-events: none; }
+  .scene { position: absolute; inset: 0; visibility: hidden; }
+  .ch { display: inline-block; will-change: transform, opacity; }
+  .pad { position: absolute; left: 96px; right: 96px; }
+
+  /* 顶栏与进度 */
+  #top { position: absolute; left: 96px; right: 96px; top: 150px; display: flex; justify-content: space-between; align-items: baseline; font-size: 30px; letter-spacing: .08em; color: var(--sec); z-index: 30; }
+  #top b { font-family: var(--serif); font-weight: 900; color: var(--ink); letter-spacing: .12em; }
+  #top .sec { color: var(--acc); font-weight: 500; }
+  #topRule { position: absolute; left: 96px; right: 96px; top: 205px; height: 0; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding-top: 5px; z-index: 30; transform-origin: 0 0; }
+  #prog { position: absolute; left: 96px; top: 1560px; height: 4px; background: var(--acc); z-index: 30; }
+  #progBg { position: absolute; left: 96px; right: 96px; top: 1561px; height: 2px; background: var(--rule); z-index: 29; }
+
+  /* S1 报头 */
+  .mast { top: 620px; text-align: center; }
+  .mast .en { font-size: 34px; letter-spacing: .6em; color: var(--sec); margin-left: .6em; }
+  .mast h1 { font-family: var(--serif); font-weight: 900; font-size: 196px; line-height: 1.1; margin: 30px 0 34px; letter-spacing: .02em; white-space: nowrap; }
+  .mast .rules { height: 14px; border-top: 6px solid var(--ink); border-bottom: 2px solid var(--ink); margin: 0 auto; transform-origin: 50% 50%; }
+  .mast .date { font-family: var(--serif); font-size: 46px; margin-top: 40px; letter-spacing: .08em; }
+  .mast .tag { display: inline-block; margin-top: 90px; font-size: 36px; color: var(--acc); border: 2px solid var(--acc); padding: 14px 30px; letter-spacing: .1em; }
+
+  /* S2 头条 */
+  .kicker { font-size: 40px; color: var(--acc); font-weight: 700; letter-spacing: .2em; display: flex; align-items: center; gap: 18px; }
+  .kicker i { width: 22px; height: 22px; background: var(--acc); display: inline-block; }
+  .hl { font-family: var(--serif); font-weight: 900; font-size: 140px; line-height: 1.25; margin: 40px 0 0; white-space: nowrap; }
+  .hl em { font-style: normal; color: var(--acc); position: relative; display: inline-block; }
+  .under { position: absolute; left: -4%; width: 108%; top: 92%; height: .42em; overflow: visible; }
+  .dek { font-family: var(--serif); font-size: 52px; line-height: 1.6; color: var(--sec); margin-top: 70px; }
+
+  /* S3 账本 */
+  .h2 { font-family: var(--serif); font-weight: 900; font-size: 84px; line-height: 1.25; margin: 0; white-space: nowrap; }
+  .sub { font-size: 40px; color: var(--sec); margin-top: 20px; letter-spacing: .06em; }
+  .sub b { color: var(--ink); } .sub em { font-style: normal; color: var(--acc); font-weight: 700; }
+  .ledger { top: 600px; }
+  .row { position: relative; padding: 34px 0 40px; }
+  .row .rl { position: absolute; left: 0; right: 0; top: 0; border-top: 2px solid var(--ink); transform-origin: 0 0; }
+  .row .co { font-family: var(--serif); font-weight: 900; font-size: 64px; margin-bottom: 18px; }
+  .row .co small { font-family: var(--sans); font-weight: 400; font-size: 30px; color: var(--mut); margin-left: 16px; letter-spacing: .04em; }
+  .row .cells { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .cell .lb { font-size: 30px; color: var(--sec); letter-spacing: .04em; }
+  .cell .val { font-family: var(--serif); font-weight: 900; font-size: 74px; line-height: 1.15; margin-top: 6px; white-space: nowrap; }
+  .cell .val .u { font-size: 38px; font-weight: 700; margin-left: 6px; }
+  .cell .nt { font-size: 28px; color: var(--mut); margin-top: 6px; }
+  .cell.down .val { color: var(--acc); }
+  .cell.down { padding-left: 34px; border-left: 2px dashed var(--rule); }
+  .stamp { position: absolute; right: 70px; top: 1300px; font-family: var(--serif); font-weight: 900; font-size: 60px; color: var(--acc); border: 7px solid var(--acc); padding: 14px 30px 18px; letter-spacing: .12em; border-radius: 10px; mix-blend-mode: multiply; }
+
+  /* S4 原因 */
+  .why { top: 400px; }
+  .why .big { font-family: var(--serif); font-weight: 900; font-size: 116px; line-height: 1.3; margin-top: 40px; }
+  .why .big em { font-style: normal; color: var(--acc); }
+  .tl { position: absolute; left: 96px; right: 96px; top: 960px; height: 420px; }
+  .tl .axis { position: absolute; left: 0; right: 0; top: 150px; border-top: 4px solid var(--ink); transform-origin: 0 0; }
+  .tl .arrow { position: absolute; right: -6px; top: 136px; width: 0; height: 0; border-left: 28px solid var(--ink); border-top: 16px solid transparent; border-bottom: 16px solid transparent; }
+  .tl .ev { position: absolute; top: 0; width: 220px; margin-left: -110px; text-align: center; }
+  .tl .ev .dot { width: 34px; height: 34px; border-radius: 50%; background: var(--acc); margin: 133px auto 0; }
+  .tl .ev .tx { position: absolute; left: 0; right: 0; top: -12px; font-size: 44px; font-weight: 700; line-height: 1.35; color: var(--acc); }
+  .tl .ev.in .dot { background: var(--ink); width: 46px; height: 46px; margin-top: 127px; }
+  .tl .ev.in .tx { color: var(--ink); top: 18px; font-family: var(--serif); font-size: 68px; font-weight: 900; }
+  .tl .ev .q { font-size: 28px; color: var(--mut); font-weight: 400; }
+  .tl .lag { position: absolute; top: 232px; font-size: 40px; color: var(--sec); letter-spacing: .06em; }
+  .tl .lagline { position: absolute; top: 210px; height: 0; border-top: 2px dashed var(--sec); }
+
+  /* S5 三个判断 */
+  .card { position: absolute; left: 96px; right: 96px; top: 380px; height: 1120px; background: var(--paper); box-shadow: 0 2px 4px rgba(40, 30, 10, .08), 0 30px 60px rgba(40, 30, 10, .14); padding: 70px 72px; box-sizing: border-box; }
+  .card .no { font-size: 32px; color: var(--mut); letter-spacing: .2em; }
+  .seal { width: 170px; height: 170px; border-radius: 50%; border: 7px solid var(--acc); color: var(--acc); font-family: var(--serif); font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 96px; margin: 40px 0 44px; }
+  .seal.two { font-size: 62px; }
+  .card h3 { font-family: var(--serif); font-weight: 900; font-size: 80px; line-height: 1.3; margin: 0 0 30px; }
+  .card p { font-size: 42px; line-height: 1.7; color: var(--sec); margin: 0; }
+  .card .data { position: absolute; left: 72px; right: 72px; bottom: 70px; border-top: 2px solid var(--ink); padding-top: 26px; font-size: 34px; line-height: 1.55; }
+  .card .data b { display: block; font-size: 28px; margin-bottom: 6px; }
+  .card .data b { color: var(--acc); letter-spacing: .1em; margin-right: 14px; }
+
+  /* S6 对你 */
+  .you { top: 400px; }
+  .tiers { position: absolute; left: 96px; right: 96px; top: 760px; }
+  .tier { margin: 0 auto 26px; padding: 34px 40px; box-sizing: border-box; text-align: center; transform-origin: 50% 100%; }
+  .tier .a { font-family: var(--serif); font-weight: 900; font-size: 58px; }
+  .tier .b { font-size: 34px; margin-top: 10px; }
+  .tier.t1 { width: 62%; background: var(--acc); color: #fff; }
+  .tier.t2 { width: 82%; background: var(--ink); color: var(--paper); }
+  .tier.t3 { width: 100%; background: var(--paper); border: 3px solid var(--ink); }
+  .tier.t1 .b, .tier.t2 .b { opacity: .85; }
+
+  /* S7 结尾 */
+  .end { top: 520px; text-align: center; }
+  .end .t { font-family: var(--serif); font-weight: 900; font-size: 120px; line-height: 1.25; }
+  .end .s { font-size: 44px; color: var(--sec); margin-top: 40px; letter-spacing: .06em; }
+  .end .s b { color: var(--acc); font-family: var(--serif); font-size: 64px; margin: 0 6px; }
+  .end .url { display: inline-block; margin-top: 90px; font-size: 40px; font-family: var(--sans); font-weight: 500; letter-spacing: .02em; border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink); padding: 22px 10px; }
+  .end .bye { margin-top: 90px; font-size: 36px; color: var(--mut); letter-spacing: .5em; }
+</style>
+</head>
+<body>
+<div id="film">
+  <div id="top"><span><b>准讯周报</b>　W45</span><span class="sec" id="secName"></span></div>
+  <div id="topRule"></div>
+  <div id="progBg"></div><div id="prog"></div>
+
+  <!-- S1 报头 -->
+  <section class="scene" id="s1">
+    <div class="pad mast">
+      <div class="en">ZHUNXUN WEEKLY</div>
+      <h1 class="rv">准讯周报</h1>
+      <div class="rules"></div>
+      <div class="date rv">2026 · 第 45 周 · 11.03 — 11.10</div>
+      <div class="tag">视频版 · 一分钟看完本周主线</div>
+    </div>
+  </section>
+
+  <!-- S2 本周主线 -->
+  <section class="scene" id="s2">
+    <div class="pad" style="top:430px">
+      <div class="kicker"><i></i>本周主线</div>
+      <h2 class="hl"><span class="rv">AI 行业</span><br><span><span class="rv">开始公开</span><em class="rv">算账<svg class="under" viewBox="0 0 340 60" preserveAspectRatio="none"><path d="M6 40 C 70 20, 150 52, 220 30 S 310 22, 334 34" fill="none" stroke="#A3271F" stroke-width="11" stroke-linecap="round"/></svg></em></span>
+      </h2>
+      <p class="dek rv">随着 Anthropic 上市，大模型公司的成本第一次被摆上台面。</p>
+    </div>
+  </section>
+
+  <!-- S3 三本账 -->
+  <section class="scene" id="s3">
+    <div class="pad" style="top:330px">
+      <h2 class="h2 rv">三家公司，同一个矛盾</h2>
+      <div class="sub rv"><b>收入在暴涨</b>　·　<em>现金在变差</em></div>
+    </div>
+    <div class="pad ledger">
+      <div class="row" id="r1"><div class="rl"></div>
+        <div class="co">Anthropic<small>三季度</small></div>
+        <div class="cells">
+          <div class="cell"><div class="lb">收入 ↑</div><div class="val"><span class="n" data-to="169.6" data-d="1">0</span><span class="u">亿美元</span></div><div class="nt">同比约 11 倍</div></div>
+          <div class="cell down"><div class="lb">经营利润 ↓</div><div class="val"><span class="n" data-to="-5.67" data-d="2">0</span><span class="u">亿美元</span></div><div class="nt">上季度 +9.74 亿</div></div>
+        </div>
+      </div>
+      <div class="row" id="r2"><div class="rl"></div>
+        <div class="co">谷歌<small>谷歌云 vs 母公司 Alphabet</small></div>
+        <div class="cells">
+          <div class="cell"><div class="lb">云收入 ↑</div><div class="val"><span class="n" data-to="103" data-d="0" data-p="+">0</span><span class="u">%</span></div><div class="nt">同比翻倍</div></div>
+          <div class="cell down"><div class="lb">自由现金流 ↓</div><div class="val"><span class="n" data-to="-91" data-d="0">0</span><span class="u">亿美元</span></div><div class="nt">单季资本开支 514 亿</div></div>
+        </div>
+      </div>
+      <div class="row" id="r3"><div class="rl"></div>
+        <div class="co">AMD<small>三季度</small></div>
+        <div class="cells">
+          <div class="cell"><div class="lb">数据中心收入 ↑</div><div class="val"><span class="n" data-to="97" data-d="0" data-p="+">0</span><span class="u">%</span></div><div class="nt">同比</div></div>
+          <div class="cell down"><div class="lb">自由现金流 ↓</div><div class="val"><span class="n" data-to="-64" data-d="0">0</span><span class="u">%</span></div><div class="nt">同比</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="stamp">先花钱 · 后收钱</div>
+  </section>
+
+  <!-- S4 原因 -->
+  <section class="scene" id="s4">
+    <div class="pad why">
+      <div class="kicker rv"><i></i>原因只有一个</div>
+      <div class="big"><span class="rv">AI 这门生意，</span><br><span class="rv">钱要<em>先花出去</em>。</span></div>
+    </div>
+    <div class="tl">
+      <div class="axis"></div><div class="arrow"></div>
+      <div class="ev" style="left:9%"><div class="tx">先签<br>算力合同</div><div class="dot"></div></div>
+      <div class="ev" style="left:31%"><div class="tx">先建<br>电厂</div><div class="dot"></div></div>
+      <div class="ev" style="left:53%"><div class="tx">先垫<br>库存</div><div class="dot"></div></div>
+      <div class="ev in" style="left:86%"><div class="tx">收入</div><div class="dot"></div></div>
+      <div class="lagline" style="left:53%; right:14%"></div>
+      <div class="lag" style="left:55%">晚一步才到账</div>
+    </div>
+  </section>
+
+  <!-- S5 三个判断 -->
+  <section class="scene" id="s5">
+    <div class="card" id="c1"><div class="no">判断 1 / 3</div><div class="seal">钱</div>
+      <h3>从讲故事，<br>到看账本</h3>
+      <p>「每一美元算力能换回多少收入」，正在成为所有 AI 公司的共同考题。</p>
+      <div class="data"><b>数据</b>Anthropic 算力成本占收入：48% → 58%</div></div>
+    <div class="card" id="c2"><div class="no">判断 2 / 3</div><div class="seal">电</div>
+      <h3>瓶颈从芯片，<br>移到了电力</h3>
+      <p>能不能通上电，开始比能不能买到芯片更决定进度。</p>
+      <div class="data"><b>数据</b>Anthropic 约 34 亿美元，自购 1.7 吉瓦燃气机组</div></div>
+    <div class="card" id="c3"><div class="no">判断 3 / 3</div><div class="seal two">信任</div>
+      <h3>最强的能力，<br>开始凭资质发放</h3>
+      <p>同一个模型，分成「大众版」和「持证版」。读推理草稿来监督 AI 的老办法，也开始失灵。</p>
+      <div class="data"><b>数据</b>Fable 5.2 人人可用 · Mythos 5.2 只给审核过的机构</div></div>
+  </section>
+
+  <!-- S6 对你 -->
+  <section class="scene" id="s6">
+    <div class="pad you">
+      <div class="kicker rv"><i></i>对普通人意味着什么</div>
+      <h2 class="h2 rv" style="font-size:104px; margin-top:36px">AI 服务会分层</h2>
+    </div>
+    <div class="tiers">
+      <div class="tier t1"><div class="a">最强的</div><div class="b">更贵、更有门槛</div></div>
+      <div class="tier t2"><div class="a">重度使用</div><div class="b">从包月改为按量计费</div></div>
+      <div class="tier t3"><div class="a">便宜的，更便宜</div><div class="b">Token 已经上了双 11 货架</div></div>
+    </div>
+  </section>
+
+  <!-- S7 结尾 -->
+  <section class="scene" id="s7">
+    <div class="pad end">
+      <div class="t"><span class="rv">完整版</span><br><span class="rv">在周报里</span></div>
+      <div class="s"><b>12</b>条新闻　·　<b>39</b>条带把握度的预测</div>
+      <div class="url">mengxiaocc1.github.io/zhoubao</div>
+      <div class="bye">下 周 见</div>
+    </div>
+  </section>
+</div>
+
+<script src="../../engine/engine.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = V.$, $$ = V.$$, css = V.css, P = V.prog, E = V.ease, lerp = V.lerp, R = V.reveal;
+  var film = new V.Film({ w: 1080, h: 1920, fps: 30, music: 'editorial', root: $('#film') });
+
+  /* 每个场景里 .rv 元素拆字 */
+  var rv = {};
+  $$('.scene').forEach(function (s) { rv[s.id] = $$('.rv', s).map(function (el) { return V.split(el); }); });
+  var IN = 0.7;                                   // 场景进场时长
+  function enter(el, lt, dur) {                   // 通用：上移淡入 / 上移淡出
+    var a = E.out3(P(lt, 0, IN)), b = E.in3(P(lt, dur, dur + 0.6));
+    css(el, { opacity: a * (1 - b), transform: 'translateY(' + ((1 - a) * 60 - b * 80) + 'px)' });
+  }
+  var secs = [];
+  function sec(name, sc) { secs.push({ t: sc.start, name: name }); }
+
+  /* S1 报头 4.2s */
+  sec('', film.scene(4.2, $('#s1'), function (lt, dur) {
+    enter($('#s1'), lt + IN, dur);
+    var h = rv.s1[0]; R(h, P(lt, 0.2, 1.3), { width: 0.45, dy: 0.12, blur: 14, scale: 0.15 });
+    css($('#s1 .rules'), { transform: 'scaleX(' + E.inOut3(P(lt, 0.9, 1.8)) + ')' });
+    R(rv.s1[1], P(lt, 1.5, 2.4), { width: 0.3 });
+    css($('#s1 .en'), { opacity: P(lt, 0.1, 0.8) });
+    var tg = E.outBack(P(lt, 2.3, 2.8));
+    css($('#s1 .tag'), { opacity: P(lt, 2.3, 2.5), transform: 'scale(' + lerp(1.4, 1, tg) + ')' });
+  }, { post: 0.6, cues: [[0.25, 'swell'], [0.95, 'swish'], [2.35, 'stamp']] }));
+
+  /* S2 本周主线 5.4s */
+  var underPath = $('#s2 .under path'), uLen = 380;
+  underPath.style.strokeDasharray = uLen;
+  sec('本周主线', film.scene(5.4, $('#s2'), function (lt, dur) {
+    enter($('#s2 .pad'), lt, dur);
+    css($('#s2 .kicker'), { opacity: P(lt, 0.1, 0.5) });
+    R(rv.s2[0], P(lt, 0.3, 1.0), { width: 0.5, blur: 10, dy: 0.15 });
+    R(rv.s2[1], P(lt, 0.8, 1.5), { width: 0.4, blur: 10, dy: 0.15 });
+    R(rv.s2[2], P(lt, 1.4, 1.9), { width: 0.6, blur: 14, scale: 0.3 });
+    underPath.style.strokeDashoffset = uLen * (1 - E.inOut3(P(lt, 1.9, 2.5)));
+    R(rv.s2[3], P(lt, 2.6, 3.8), { width: 0.2 });
+  }, { cues: [[0.3, 'hit'], [1.9, 'pen'], [2.6, 'type']] }));
+
+  /* S3 三本账 14s */
+  var rows = ['#r1', '#r2', '#r3'].map(function (id) { return $(id); });
+  var rowT = [1.4, 5.0, 8.6];
+  sec('三本账', film.scene(14, $('#s3'), function (lt, dur) {
+    var b = E.in3(P(lt, dur, dur + 0.6));
+    css($('#s3'), { opacity: 1 - b });
+    var a = E.out3(P(lt, 0, IN));
+    css($('#s3 .pad'), { opacity: a, transform: 'translateY(' + (1 - a) * 60 + 'px)' });
+    R(rv.s3[0], P(lt, 0.1, 0.9), { width: 0.4, blur: 8 });
+    R(rv.s3[1], P(lt, 0.7, 1.3), { width: 0.3 });
+    rows.forEach(function (r, i) {
+      var t0 = rowT[i], p = E.out3(P(lt, t0, t0 + 0.7));
+      css(r, { opacity: p, transform: 'translateY(' + (1 - p) * 40 + 'px)' });
+      css($('.rl', r), { transform: 'scaleX(' + E.inOut3(P(lt, t0 - 0.2, t0 + 0.5)) + ')' });
+      $$('.n', r).forEach(function (n, j) {
+        var to = +n.dataset.to, d = +n.dataset.d, q = E.outExpo(P(lt, t0 + 0.3 + j * 0.9, t0 + 1.6 + j * 0.9));
+        var v = to * q, s = V.fmt(Math.abs(v), d);
+        n.textContent = (v < 0 || (to < 0 && q > 0) ? '−' : (n.dataset.p || '')) + s;
+        css(n.parentNode.parentNode, { opacity: j === 0 ? 1 : lerp(0.15, 1, P(lt, t0 + 1.0, t0 + 1.3)) });
+      });
+    });
+    var st = P(lt, 12.0, 12.25);
+    css($('#s3 .stamp'), { opacity: st > 0 ? 0.92 : 0, transform: 'rotate(-8deg) scale(' + lerp(2.2, 1, E.out5(st)) + ')' });
+  }, { cues: [[0.1, 'hit', 0.6], [1.4, 'row'], [2.6, 'down'], [5.0, 'row'], [6.2, 'down'], [8.6, 'row'], [9.8, 'down'], [12.0, 'stamp']] }));
+
+  /* S4 原因 7.6s */
+  sec('原因', film.scene(7.6, $('#s4'), function (lt, dur) {
+    enter($('#s4'), lt, dur);
+    R(rv.s4[0], P(lt, 0.1, 0.5), { width: 0.4 });
+    R(rv.s4[1], P(lt, 0.4, 1.2), { width: 0.4, blur: 8 });
+    R(rv.s4[2], P(lt, 1.0, 1.9), { width: 0.4, blur: 8 });
+    css($('#s4 .axis'), { transform: 'scaleX(' + E.inOut3(P(lt, 2.0, 2.8)) + ')' });
+    css($('#s4 .arrow'), { opacity: P(lt, 2.7, 2.8) });
+    $$('#s4 .ev').forEach(function (ev, i) {
+      var t0 = i < 3 ? 2.6 + i * 0.6 : 4.8, p = E.outBack(P(lt, t0, t0 + 0.45));
+      css(ev, { opacity: P(lt, t0, t0 + 0.2), transform: 'translateY(' + (1 - p) * 30 + 'px)' });
+    });
+    var lp = E.inOut3(P(lt, 4.2, 4.9));
+    css($('#s4 .lagline'), { clipPath: 'inset(0 ' + (1 - lp) * 100 + '% 0 0)' });
+    css($('#s4 .lag'), { opacity: P(lt, 4.4, 4.8) });
+  }, { cues: [[0.4, 'hit', 0.7], [2.6, 'tick'], [3.2, 'tick'], [3.8, 'tick'], [4.8, 'bell']] }));
+
+  /* S5 三个判断 3 × 4.7s */
+  var cards = ['#c1', '#c2', '#c3'].map(function (id) { return $(id); });
+  var CD = 4.7;
+  sec('三个判断', film.scene(CD * 3, $('#s5'), function (lt, dur) {
+    cards.forEach(function (c, i) {
+      var t0 = i * CD, a = E.out3(P(lt, t0, t0 + 0.7)), b = i < 2 ? E.inOut3(P(lt, t0 + CD - 0.15, t0 + CD + 0.55)) : E.in3(P(lt, dur, dur + 0.6));
+      var on = lt >= t0 - 0.01 && (i === 2 || lt < t0 + CD + 0.6);
+      css(c, { visibility: on ? 'inherit' : 'hidden', zIndex: 10 + i,
+        opacity: (i === 0 ? 1 : a) * (i === 2 ? 1 - b : 1),
+        transform: 'translateX(' + (i === 0 ? 0 : (1 - a) * 900) + 'px) translateX(' + (-b * 1100) + 'px) rotate(' + (-b * 7 + (1 - a) * 4 * (i > 0)) + 'deg)' });
+      var s = E.outBack(P(lt, t0 + 0.4, t0 + 0.9));
+      css($('.seal', c), { transform: 'scale(' + lerp(0.4, 1, s) + ') rotate(' + (1 - s) * -20 + 'deg)', opacity: P(lt, t0 + 0.4, t0 + 0.55) });
+      css($('h3', c), { opacity: P(lt, t0 + 0.7, t0 + 1.1) });
+      css($('p', c), { opacity: P(lt, t0 + 1.1, t0 + 1.6) });
+      css($('.data', c), { opacity: P(lt, t0 + 1.8, t0 + 2.2) });
+    });
+    if (lt < 0.7) css($('#c1'), { opacity: E.out3(P(lt, 0, 0.7)), transform: 'translateY(' + (1 - E.out3(P(lt, 0, 0.7))) * 60 + 'px)' });
+  }, { cues: [[0, 'swish'], [0.4, 'stamp', 0.7], [CD - 0.1, 'page'], [CD + 0.4, 'stamp', 0.7], [CD * 2 - 0.1, 'page'], [CD * 2 + 0.4, 'stamp', 0.7]] }));
+
+  /* S6 对你 7.6s */
+  var tiers = $$('#s6 .tier');
+  sec('对你', film.scene(7.6, $('#s6'), function (lt, dur) {
+    enter($('#s6'), lt, dur);
+    R(rv.s6[0], P(lt, 0.1, 0.5), { width: 0.4 });
+    R(rv.s6[1], P(lt, 0.4, 1.3), { width: 0.4, blur: 8 });
+    [2, 1, 0].forEach(function (i, k) {
+      var t0 = 1.6 + k * 1.0, p = E.outBack(P(lt, t0, t0 + 0.5));
+      css(tiers[i], { opacity: P(lt, t0, t0 + 0.15), transform: 'scaleY(' + lerp(0.2, 1, p) + ')' });
+    });
+  }, { cues: [[0.4, 'hit', 0.6], [1.6, 'block'], [2.6, 'block'], [3.6, 'block']] }));
+
+  /* S7 结尾 6.2s */
+  sec('完整版', film.scene(6.2, $('#s7'), function (lt, dur) {
+    var a = E.out3(P(lt, 0, IN));
+    css($('#s7'), { opacity: a * (1 - P(lt, dur - 0.7, dur)) });
+    R(rv.s7[0], P(lt, 0.1, 0.7), { width: 0.5, blur: 8 });
+    R(rv.s7[1], P(lt, 0.5, 1.2), { width: 0.5, blur: 8 });
+    css($('#s7 .s'), { opacity: P(lt, 1.4, 1.8) });
+    var u = E.out3(P(lt, 2.1, 2.6));
+    css($('#s7 .url'), { opacity: u, transform: 'translateY(' + (1 - u) * 20 + 'px)' });
+    css($('#s7 .bye'), { opacity: P(lt, 3.0, 3.6) });
+  }, { post: 0, cues: [[0.1, 'swell', 0.8], [2.1, 'tick'], [4.6, 'end']] }));
+
+  /* 顶栏、进度、颗粒 */
+  var grain = V.grain($('#film'), 0.10);
+  film.overlay(function (t, f) {
+    var name = ''; secs.forEach(function (s) { if (t >= s.t) name = s.name; });
+    $('#secName').textContent = name;
+    var a = E.out3(P(t, 0.0, 0.8));
+    css($('#topRule'), { transform: 'scaleX(' + a + ')' });
+    css($('#top'), { opacity: P(t, 3.9, 4.5) });
+    $('#prog').style.width = (888 * t / film.t) + 'px';
+    grain(f);
+  });
+  film.publish();
+})();
+</script>
+</body>
+</html>

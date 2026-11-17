@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>准讯周报 · 视频版样片 W45</title>
+<style>
+  :root { --bg: #F7F4EE; --card: #FFFDF9; --ink: #1B1A18; --sec: #4A4742; --mut: #77726A; --rule: #DAD4C7; --acc: #A3271F;
+    --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+  header { border-bottom: 3px solid var(--ink); padding-bottom: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+  header h1 { font-family: var(--serif); font-weight: 900; font-size: 34px; margin: 0; letter-spacing: .04em; }
+  header span { color: var(--mut); font-size: 14px; }
+  .lead { color: var(--sec); font-size: 15px; margin: 18px 0 34px; max-width: 760px; }
+  .lead a { color: var(--acc); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1.6fr; gap: 28px; align-items: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } .wide { grid-column: 1 / -1; } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  figure { margin: 0; background: var(--card); box-shadow: 0 1px 2px rgba(40,30,10,.05), 0 8px 24px rgba(40,30,10,.06); }
+  video { width: 100%; display: block; background: #000; }
+  figcaption { padding: 14px 16px 18px; font-size: 14px; color: var(--sec); }
+  figcaption b { display: block; font-family: var(--serif); font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+  figcaption i { font-style: normal; color: var(--acc); font-weight: 600; margin-right: 6px; }
+  footer { margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 14px; font-size: 13px; color: var(--mut); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>准讯周报 · 视频版样片</h1><span>2026 · W45 · 三种风格对比</span></header>
+  <p class="lead">同一期周报，做成三条风格、画幅、篇幅都不同的短视频。每一帧都由代码绘制，配乐与音效也是代码合成，没有用视频生成模型和素材库。当前为「字幕 + 配乐」版本，暂无配音。返回 <a href="../">本期周报</a>。</p>
+  <div class="grid">
+    <figure><video src="out/A-editorial-lead-9x16.mp4" poster="out/A-poster.jpg" controls preload="metadata" playsinline></video>
+      <figcaption><b>A · 纸媒社论风</b><i>竖屏 59 秒</i>本周主线「AI 行业开始公开算账」，与网站同一套配色和字体。</figcaption></figure>
+    <figure><video src="out/B-swiss-robot-9x16.mp4" poster="out/B-poster.jpg" controls preload="metadata" playsinline></video>
+      <figcaption><b>B · 瑞士网格数据风</b><i>竖屏 57 秒</i>单条深拆：机器人单步 91%，三步只剩一半。</figcaption></figure>
+    <figure class="wide"><video src="out/C-newsflash-4numbers-16x9.mp4" poster="out/C-poster.jpg" controls preload="metadata" playsinline></video>
+      <figcaption><b>C · 深色快讯风</b><i>横屏 55 秒</i>本周 4 个数字、下周看点，底部滚动快讯条。</figcaption></figure>
+  </div>
+  <footer>准讯周报 ZHUNXUN WEEKLY · 视频样片 · 分镜与渲染方法见 video/README.md</footer>
+</div>
+</body>
+</html>
